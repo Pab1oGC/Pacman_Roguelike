@@ -5,6 +5,7 @@ using UnityEngine;
 public class Movement : MonoBehaviour
 {
     [Header("Referencias")]
+    [SerializeField] private DPadInputSource dpadOverride;
     [SerializeField] private SimpleJoystick joystick;  // auto-resolve si null
     [SerializeField] private Rigidbody rb;             // auto-resolve si null
     [SerializeField] private Camera arCamera;          // usa Camera.main si null
@@ -42,30 +43,41 @@ public class Movement : MonoBehaviour
         if (!rb) rb = GetComponent<Rigidbody>();
         if (!arCamera) arCamera = Camera.main;
 
-        if (!joystick)
-        {
+        // --- INPUT SOURCE: D-PAD PRIMERO ---
+        var dpad = dpadOverride
+                   ?? GetComponentInChildren<DPadInputSource>(true)
 #if UNITY_2022_2_OR_NEWER
-            joystick = FindFirstObjectByType<SimpleJoystick>(FindObjectsInactive.Include);
+               ?? FindFirstObjectByType<DPadInputSource>(FindObjectsInactive.Include);
 #else
-            joystick = FindObjectOfType<SimpleJoystick>(true);
+                   ?? FindObjectOfType<DPadInputSource>(true);
 #endif
+
+        if (dpad != null)
+        {
+            _inputSource = dpad;              // <- usa el D-pad
+            //Debug.Log("[Movement] Input = DPad");
+        }
+        else if (joystick != null)
+        {
+            _inputSource = new JoystickInputSource(joystick);
+            //Debug.Log("[Movement] Input = Joystick");
+        }
+        else
+        {
+            _inputSource = new StaticZeroInput();
+            //Debug.LogWarning("[Movement] Sin input source");
         }
 
-        if (rb) rb.interpolation = RigidbodyInterpolation.Interpolate;
-
-        // Dependencias por defecto
-        _inputSource = new JoystickInputSource(joystick);
+        // resto igual...
         _dirProvider = new CameraRelativeProvider(arCamera);
         _rotationPolicy = UseCfgFaceInstantly() ? (IRotationPolicy)new InstantRotationPolicy()
-                                                : (IRotationPolicy)new SmoothRotationPolicy();
+                                               : new SmoothRotationPolicy();
         _motor = new RigidbodyMotor();
-
-        // Speed Provider
         _speed = speedSource as ISpeedProvider ?? new StaticSpeedProvider(UseCfgMoveSpeed());
-
-        // Dash Controller
-        _dash = dashSource as IDashController; // puede quedar null si aún no lo agregaste
+        _dash = dashSource as IDashController;
     }
+
+    private sealed class StaticZeroInput : IMoveInputSource { public Vector2 GetMoveInput() => Vector2.zero; }
 
     private void Update()
     {
@@ -107,4 +119,5 @@ public class Movement : MonoBehaviour
         public float CurrentSpeed { get; private set; }
         public StaticSpeedProvider(float v) { CurrentSpeed = Mathf.Max(0f, v); }
     }
+    public void SetInputSource(IMoveInputSource src) => _inputSource = src;
 }

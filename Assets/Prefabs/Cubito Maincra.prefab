@@ -9,6 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1597092882635332165}
+  - component: {fileID: -6953925379355672324}
+  - component: {fileID: -4151575186418360225}
   - component: {fileID: 6627936244119269204}
   - component: {fileID: 8758452883346750533}
   - component: {fileID: -4920245863237038257}
@@ -38,6 +40,39 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-6953925379355672324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1506949770925458051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c884c0d3be4a5e84d85987910508894d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rb: {fileID: -5449306544745576178}
+  mainCamera: {fileID: 0}
+  joystick: {fileID: 0}
+  invulnerability: {fileID: -4920245863237038257}
+  speedSource: {fileID: 0}
+--- !u!114 &-4151575186418360225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1506949770925458051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2225dc6d5be070541bdbaf824e9372ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  context: {fileID: -6953925379355672324}
+  movement: {fileID: 6627936244119269204}
+  dash: {fileID: -2239728369939702677}
+  health: {fileID: 8758452883346750533}
 --- !u!114 &6627936244119269204
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -50,6 +85,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 820479ee2c5a6504aa1b3ad91a9a6cf4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dpadOverride: {fileID: 0}
   joystick: {fileID: 0}
   rb: {fileID: -5449306544745576178}
   arCamera: {fileID: 0}
@@ -98,7 +134,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29247d05de023214f890237c56748687, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: -5449306544745576178}
+  rb: {fileID: 0}
   invulnerability: {fileID: -4920245863237038257}
   config: {fileID: 11400000, guid: 4428f33d568afa64c888eee0c1b8bfe8, type: 2}
   movementController: {fileID: 6627936244119269204}

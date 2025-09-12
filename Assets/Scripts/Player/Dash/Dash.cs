@@ -99,5 +99,12 @@ public class Dash : MonoBehaviour, IDashController
     public float CooldownRemaining => Mathf.Max(0f, _cooldownTimer);
     public float CooldownDuration => config ? Mathf.Max(0f, config.cooldown) : 0f;
 
+    public void Inject(Rigidbody rb, Invulnerability inv, Movement movement)
+    {
+        this.rb = rb ? rb : this.rb;
+        this.invulnerability = inv ? inv : this.invulnerability;
+        this.movementController = movement ? movement : this.movementController;
+    }
+
 
 }
