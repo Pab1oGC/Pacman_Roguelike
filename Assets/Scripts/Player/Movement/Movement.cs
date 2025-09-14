@@ -1,6 +1,7 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 
 public class Movement : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class Movement : MonoBehaviour
     [SerializeField] private SimpleJoystick joystick;  // auto-resolve si null
     [SerializeField] private Rigidbody rb;             // auto-resolve si null
     [SerializeField] private Camera arCamera;          // usa Camera.main si null
+    [SerializeField] private AttackController attackController;
 
     [Header("Tuning (fallback si no hay ScriptableObject)")]
     [SerializeField, Min(0f)] private float moveSpeed = 0.5f;
@@ -30,11 +32,13 @@ public class Movement : MonoBehaviour
     private ISpeedProvider _speed;
     private IDashController _dash;
 
+    public Animator animator;
+
     // Estado
     private Vector2 _input;
-    public Vector2 LatestInput => _input; // <- Dash leerá esto
+    public Vector2 LatestInput => _input; // <- Dash leerÃ¡ esto
 
-    // ---- Inyección opcional desde código ----
+    // ---- InyecciÃ³n opcional desde cÃ³digo ----
     public void SetSpeedProvider(ISpeedProvider sp) => _speed = sp;
     public void SetDashController(IDashController dc) => _dash = dc;
 
@@ -44,20 +48,20 @@ public class Movement : MonoBehaviour
         if (!arCamera) arCamera = Camera.main;
 
         // --- INPUT SOURCE: D-PAD PRIMERO ---
-        var dpad = dpadOverride
-                   ?? GetComponentInChildren<DPadInputSource>(true)
+        joystick = null
+                   ?? GetComponentInChildren<SimpleJoystick>(true)
 #if UNITY_2022_2_OR_NEWER
-               ?? FindFirstObjectByType<DPadInputSource>(FindObjectsInactive.Include);
+               ?? FindFirstObjectByType<SimpleJoystick>(FindObjectsInactive.Include);
 #else
-                   ?? FindObjectOfType<DPadInputSource>(true);
+                   ?? FindObjectOfType<SimpleJoystick>(true);
 #endif
 
-        if (dpad != null)
+        /*if (dpad != null)
         {
             _inputSource = dpad;              // <- usa el D-pad
             //Debug.Log("[Movement] Input = DPad");
-        }
-        else if (joystick != null)
+        }*/
+        if (joystick != null)
         {
             _inputSource = new JoystickInputSource(joystick);
             //Debug.Log("[Movement] Input = Joystick");
@@ -83,16 +87,24 @@ public class Movement : MonoBehaviour
     {
         _input = _inputSource?.GetMoveInput() ?? Vector2.zero;
 
-        // Si el flag cambia en runtime, refresca la política sin allocs
+        // Si el flag cambia en runtime, refresca la polÃ­tica sin allocs
         _rotationPolicy = UseCfgFaceInstantly() ? (IRotationPolicy)new InstantRotationPolicy()
                                                : new SmoothRotationPolicy();
     }
 
     private void FixedUpdate()
     {
-        if (!rb) return;
+        if (attackController != null && attackController.IsAttacking)
+        {
+            // No mover mientras ataca
+            animator.SetFloat("Speed", 0f, 0.1f, Time.deltaTime);
+            return;
+        }
 
-        // Si está dashing, no aplicar locomoción normal
+        float baseSpeed = _speed?.CurrentSpeed ?? UseCfgMoveSpeed();
+        float speed = baseSpeed * Mathf.Clamp01(_input.magnitude);
+        animator.SetFloat("Speed", speed * 2.5f, 0.1f, Time.deltaTime);
+
         if (_dash != null && (_dash.IsDashing || _dash.IsOnCooldown && _input.sqrMagnitude < 1e-6f))
             return;
 
@@ -102,11 +114,22 @@ public class Movement : MonoBehaviour
         if (worldDir == Vector3.zero) return;
 
         float dt = Time.fixedDeltaTime;
-        float baseSpeed = _speed?.CurrentSpeed ?? UseCfgMoveSpeed();
-        float speed = baseSpeed * Mathf.Clamp01(_input.magnitude);
+        Vector3 moveStep = worldDir.normalized * speed * dt;
+        rb.MovePosition(rb.position + moveStep);
 
-        Quaternion newRot = _rotationPolicy.Compute(rb.rotation, worldDir, UseCfgTurnSpeed(), dt);
-        _motor.Move(rb, newRot, speed, dt);
+        Quaternion targetRot = Quaternion.LookRotation(worldDir, Vector3.up);
+        Quaternion newRot = Quaternion.RotateTowards(rb.rotation, targetRot, UseCfgTurnSpeed() * dt);
+        rb.MoveRotation(newRot);
+
+        if (transform.childCount > 0)
+        {
+            Rigidbody childRb = transform.GetChild(0).GetComponent<Rigidbody>();
+            if (childRb != null)
+            {
+                childRb.MovePosition(rb.position);
+                childRb.MoveRotation(newRot);
+            }
+        }
     }
 
     private float UseCfgMoveSpeed() => config ? config.moveSpeed : moveSpeed;

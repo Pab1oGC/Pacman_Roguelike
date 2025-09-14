@@ -13,6 +13,8 @@ public sealed class PlayerInstaller : MonoBehaviour
     [SerializeField] private Dash dash;
     [SerializeField] private Health health;
 
+    [SerializeField] public AttackController attackController;
+
     void OnValidate()
     {
         if (!context) context = GetComponent<PlayerContext>();
@@ -23,6 +25,8 @@ public sealed class PlayerInstaller : MonoBehaviour
 
     void Awake()
     {
+
+        attackController = GetComponentInChildren<AttackController>();
         if (!context) { Debug.LogError("[PlayerInstaller] Falta PlayerContext", this); return; }
 
         var dpad = GetComponentInChildren<DPadInputSource>(true);
@@ -41,4 +45,8 @@ public sealed class PlayerInstaller : MonoBehaviour
 
 
     }
+
+    
+
+
 }

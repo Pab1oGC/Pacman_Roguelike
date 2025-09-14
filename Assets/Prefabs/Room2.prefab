@@ -11,6 +11,26 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: ffd386ec017330b499a2a1234e283c26, type: 2}
+    - target: {fileID: 4730099570780094981, guid: 5d742cbaa12407146bd3454131628b6e, type: 3}
+      propertyPath: m_Constraints
+      value: 126
+      objectReference: {fileID: 0}
+    - target: {fileID: 7286188083591477313, guid: 5d742cbaa12407146bd3454131628b6e, type: 3}
+      propertyPath: m_Size.x
+      value: 9.711504
+      objectReference: {fileID: 0}
+    - target: {fileID: 7286188083591477313, guid: 5d742cbaa12407146bd3454131628b6e, type: 3}
+      propertyPath: m_Size.z
+      value: 5.849064
+      objectReference: {fileID: 0}
+    - target: {fileID: 7286188083591477313, guid: 5d742cbaa12407146bd3454131628b6e, type: 3}
+      propertyPath: m_Center.x
+      value: -12.916829
+      objectReference: {fileID: 0}
+    - target: {fileID: 7286188083591477313, guid: 5d742cbaa12407146bd3454131628b6e, type: 3}
+      propertyPath: m_Center.z
+      value: -6.3469057
+      objectReference: {fileID: 0}
     - target: {fileID: 7973538313113357229, guid: 5d742cbaa12407146bd3454131628b6e, type: 3}
       propertyPath: m_Name
       value: Room2
@@ -59,5 +79,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1950168612949995140, guid: 5d742cbaa12407146bd3454131628b6e, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 5d742cbaa12407146bd3454131628b6e, type: 3}

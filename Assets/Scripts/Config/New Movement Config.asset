@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b380e526992a6634c8d3252163fff851, type: 3}
   m_Name: New Movement Config
   m_EditorClassIdentifier: 
-  moveSpeed: 0.5
+  moveSpeed: 3
   turnSpeed: 540
   faceInstantly: 0
