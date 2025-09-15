@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: -3980775075144627359}
   - component: {fileID: 5491795036017693815}
   - component: {fileID: 7769326410451542205}
+  - component: {fileID: 3304020434179395460}
   m_Layer: 0
   m_Name: Fireball
   m_TagString: Untagged
@@ -45,6 +46,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1238c9c83bf96b4da74af9d5826b402, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  damage: 1
+  isBulletPlayer: 1
 --- !u!33 &5491795036017693815
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -94,3 +97,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!135 &3304020434179395460
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8129785972816200040}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.005008075
+  m_Center: {x: 0.0000010582153, y: 0.0000012260865, z: 0.0000033201657}
