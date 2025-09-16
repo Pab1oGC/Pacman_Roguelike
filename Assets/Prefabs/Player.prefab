@@ -41,6 +41,7 @@ GameObject:
   - component: {fileID: 3369642784169392318}
   - component: {fileID: 3271894558659917611}
   - component: {fileID: 4215800223667458577}
+  - component: {fileID: 1894666054526753769}
   - component: {fileID: 7640271387323929491}
   - component: {fileID: 1987639285720776501}
   - component: {fileID: 8893750846947936627}
@@ -102,6 +103,19 @@ MonoBehaviour:
   dash: {fileID: 0}
   health: {fileID: 1987639285720776501}
   attackController: {fileID: 4266369032228702476}
+--- !u!114 &1894666054526753769
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4217805844949086149}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c47d43e50b7a8e4c99098ede61849eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 999
 --- !u!114 &7640271387323929491
 MonoBehaviour:
   m_ObjectHideFlags: 0
