@@ -1934,7 +1934,6 @@ MonoBehaviour:
   - {fileID: 7973538312551028544}
   - {fileID: 5890116487577159669}
   roomCenter: {fileID: 2485013321815122355}
-  destroyedWalls: 
 --- !u!114 &1950168612949995140
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3709,7 +3708,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7973538314528416844}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -9.63378, y: 8.6797, z: -4.3855}
+  m_LocalPosition: {x: -9.63378, y: 8.6797, z: -4.41}
   m_LocalScale: {x: 114.15, y: 100, z: 100}
   m_Children: []
   m_Father: {fileID: 7973538313277765588}

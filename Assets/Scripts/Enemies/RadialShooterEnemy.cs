@@ -26,6 +26,8 @@ public class RadialShooterEnemy : Enemy
 
     void Update()
     {
+        if (!canAct) return;
+
         Vector3 direction = player.position - transform.position;
         float distance = direction.magnitude;
 

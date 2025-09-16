@@ -17,18 +17,12 @@ public class KamikazeEnemy : Enemy
     {
         if (player == null) return;
 
+        if(!canAct) return;
+
         transform.position = Vector3.MoveTowards(transform.position, player.position, speed * Time.deltaTime);
 
         Vector3 dir = (player.position - transform.position).normalized;
         transform.forward = dir;
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            Destroy(gameObject);
-        }
     }
 
 

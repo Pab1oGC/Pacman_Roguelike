@@ -65,13 +65,17 @@ public class HealthService : IHealth
         Current = Mathf.Max(0f, Current - amount);
         float dealt = before - Current;
 
+        // Siempre disparar OnChanged
+        OnChanged?.Invoke(Current, Max);
+
+        // Solo disparar OnDamaged si hubo daño real
         if (dealt > 0f)
-        {
             OnDamaged?.Invoke(info);
-            OnChanged?.Invoke(Current, Max);
-            if (IsDead) OnDied?.Invoke();
-        }
-        // Salud consume todo lo que recibe; residual suele ser 0
+
+        // Disparar OnDied si murió
+        if (IsDead)
+            OnDied?.Invoke();
+
         return amount - dealt;
     }
 }

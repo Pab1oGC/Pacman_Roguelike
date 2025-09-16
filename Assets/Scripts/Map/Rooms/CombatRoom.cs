@@ -48,6 +48,13 @@ public class CombatRoom : MonoBehaviour
             spawnedEnemies.Add(enemy);
         }
 
+        yield return new WaitForSeconds(2f);
+
+        foreach (var enemy in spawnedEnemies)
+        {
+            if (enemy != null) enemy.GetComponent<Enemy>().canAct = true;
+        }
+
         // Esperar a que todos mueran
         while (spawnedEnemies.Exists(e => e != null))
             yield return null;

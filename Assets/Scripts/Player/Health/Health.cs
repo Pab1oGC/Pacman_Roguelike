@@ -6,44 +6,40 @@ using UnityEngine.XR.LegacyInputHelpers;
 
 public class Health : MonoBehaviour
 {
-    [Header("Vida / Armadura inicial")]
-    [Min(1f)] public float maxHealth = 6f;
-    [Min(0f)] public float startArmor = 0f;
+    [Header("Vida")]
+    public float maxHealth = 6f;
+    public float currentHealth;
 
-    [Header("Opcional")]
-    [SerializeField] private Invulnerability invulnerability;
-
-    public IHealth health { get; private set; }
-    public IArmor armor { get; private set; }
-
-    // Eventos simples para UI (también puedes suscribirte a los del modelo)
     public event Action<float, float> OnHealthChanged;
-    public event Action<float> OnArmorChanged;
     public event Action OnDied;
 
-    void Awake()
+    private void Awake()
     {
-        health = new HealthService(maxHealth);
-        armor = new ArmorService(startArmor);
-
-        if (!invulnerability) invulnerability = GetComponent<Invulnerability>();
-
-        health.OnChanged += (c, m) => OnHealthChanged?.Invoke(c, m);
-        health.OnDied += () => OnDied?.Invoke();
-        armor.OnArmorChanged += a => OnArmorChanged?.Invoke(a);
+        currentHealth = maxHealth;
     }
 
-    public void ApplyDamage(DamageInfo info)
+    private void OnEnable()
     {
-        if (health.IsDead) return;
-        if (invulnerability && invulnerability.IsInvulnerable) return;
-
-        float residual = armor.Absorb(info.Amount);
-        if (residual > 0f) health.TakeDamage(residual, info);
+        // Emite estado actual cuando el componente se habilita, así nuevas UIs se sincronizan
+        OnHealthChanged?.Invoke(currentHealth, maxHealth);
     }
 
-    public void Heal(float amount) => health.Heal(amount);
-    public void AddArmor(float amount) => armor.Add(amount);
+    public void ApplyDamage(float amount)
+    {
+        if (currentHealth <= 0f) return;
 
-    public void Kill() => health.Kill();
+        currentHealth = Mathf.Max(0f, currentHealth - amount);
+        OnHealthChanged?.Invoke(currentHealth, maxHealth);
+
+        if (currentHealth <= 0f)
+            OnDied?.Invoke();
+    }
+
+    public void Heal(float amount)
+    {
+        if (currentHealth <= 0f) return;
+
+        currentHealth = Mathf.Min(maxHealth, currentHealth + amount);
+        OnHealthChanged?.Invoke(currentHealth, maxHealth);
+    }
 }

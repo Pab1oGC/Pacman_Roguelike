@@ -47,6 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 1
+  isBulletPlayer: 0
 --- !u!33 &6295670984900494207
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -74,7 +75,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4f82533cd634c314fb7dd455b5ac431b, type: 2}
+  - {fileID: 2100000, guid: 07468beca6a486d4ab0092dbef0f9172, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

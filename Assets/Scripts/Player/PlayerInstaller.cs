@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [DefaultExecutionOrder(-100)] // se ejecuta temprano
 public sealed class PlayerInstaller : MonoBehaviour
@@ -43,7 +44,17 @@ public sealed class PlayerInstaller : MonoBehaviour
             dash.Inject(context.Rb, context.Invulnerability, movement);
         }
 
+        if (health)
+        {
+            health.OnDied += GameOver;
+        }
 
+
+    }
+
+    private void GameOver()
+    {
+        SceneManager.LoadScene("SampleScene");
     }
 
     

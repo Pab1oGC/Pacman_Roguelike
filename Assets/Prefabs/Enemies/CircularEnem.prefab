@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1079864457968876220}
   m_Layer: 0
   m_Name: CircularEnem
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -52,6 +52,7 @@ MonoBehaviour:
   fireRate: 0.5
   moveRadius: 2
   moveSpeed: 1.2
+  minDistance: 3
   rb: {fileID: 1079864457968876220}
 --- !u!135 &8825236666558751752
 SphereCollider:
