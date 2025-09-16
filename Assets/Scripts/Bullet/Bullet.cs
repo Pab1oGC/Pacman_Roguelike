@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
+    public float timeToDestroy = 1f;
     public float damage = 1f;
     public bool isBulletPlayer;
     // Start is called before the first frame update
     void Start()
     {
-        Destroy(gameObject,1f);
+        Destroy(gameObject, timeToDestroy);
     }
 
     // Update is called once per frame
@@ -33,4 +34,5 @@ public class Bullet : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
 }

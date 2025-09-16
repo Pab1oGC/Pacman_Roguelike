@@ -15,6 +15,9 @@ public class CombatRoom : MonoBehaviour
     private bool cleared = false;
     private bool inCombat = false;
 
+    public GameObject buffon;
+    public Transform buffonSpawn;
+
     private void Awake()
     {
         room = GetComponent<RoomBehaviour>();
@@ -25,6 +28,15 @@ public class CombatRoom : MonoBehaviour
         if (!other.CompareTag("Player") || cleared || inCombat) return;
 
         StartCoroutine(StartCombat());
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            GameObject buffon = GameObject.FindGameObjectWithTag("Buffon");
+            Destroy(buffon);
+        }
     }
 
     private IEnumerator StartCombat()
@@ -48,7 +60,7 @@ public class CombatRoom : MonoBehaviour
             spawnedEnemies.Add(enemy);
         }
 
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(0.5f);
 
         foreach (var enemy in spawnedEnemies)
         {
@@ -65,5 +77,6 @@ public class CombatRoom : MonoBehaviour
         // Restaurar todo el estado original de la sala (doors + walls)
         room.RestoreRoom();
 
+        Instantiate(buffon, buffonSpawn.position, buffonSpawn.rotation);
     }
 }

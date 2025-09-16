@@ -6,10 +6,11 @@ public class AttackController : MonoBehaviour
 {
     [Header("Referencias")]
     [SerializeField] private Animator animator; // Arrastra el Animator del hijo desde el Inspector
-    [SerializeField] private GameObject fireballPrefab;
+    [SerializeField] private Bullet fireballPrefab;
     [SerializeField] private Transform firePoint;
 
     private bool isAttacking = false;
+    private float lifeTimeBullet = 1;
 
     private void Awake()
     {
@@ -29,7 +30,8 @@ public class AttackController : MonoBehaviour
     {
         if (fireballPrefab != null && firePoint != null)
         {
-            Instantiate(fireballPrefab, firePoint.position, firePoint.rotation);
+            Bullet b = Instantiate(fireballPrefab, firePoint.position, firePoint.rotation);
+            b.timeToDestroy = lifeTimeBullet;
         }
         else
         {
@@ -52,4 +54,15 @@ public class AttackController : MonoBehaviour
     }
 
     public bool IsAttacking => isAttacking;
+
+    public void IncrementBulletLifetime(float increment)
+    {
+        lifeTimeBullet += increment;
+    }
+
+    public void DecrementBulletLifetime(float decrease)
+    {
+        if(lifeTimeBullet <= 0.1) return;
+        lifeTimeBullet -= decrease;
+    }
 }

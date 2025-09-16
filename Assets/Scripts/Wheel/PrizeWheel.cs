@@ -36,6 +36,9 @@ public class PrizeWheel : MonoBehaviour
     [SerializeField] private float pointerOffsetDeg = 0f; // si tu flecha no está EXACTAMENTE arriba
     [SerializeField] private bool wedgesClockwise = true;
 
+    [Header("Costo por giro")]
+    [SerializeField] private int spinCost = 1;
+
     // Player (auto-bind estilo HeartsUI)
     private PlayerWallet wallet;
     private Health playerHealth;
@@ -82,6 +85,27 @@ public class PrizeWheel : MonoBehaviour
     private void OnSpinClicked()
     {
         if (spinning || segments.Count == 0 || wheel == null) return;
+
+        // --- NUEVO: asegurar wallet y descontar ---
+        if (wallet == null)
+        {
+            var go = GameObject.FindGameObjectWithTag("Player");
+            if (go != null) wallet = go.GetComponentInChildren<PlayerWallet>();
+        }
+
+        if (wallet == null)
+        {
+            Debug.LogWarning("[PrizeWheel] No hay PlayerWallet para descontar el giro.");
+            return; // si prefieres que gire gratis cuando no hay wallet, quita este return
+        }
+
+        if (!wallet.Spend(spinCost))
+        {
+            Debug.LogWarning($"[PrizeWheel] Monedas insuficientes. Necesitas {spinCost}.");
+            return; // bloquea el giro si no alcanza
+        }
+        // --- FIN NUEVO ---
+
         int index = WeightedRoll();
         StartCoroutine(SpinToIndex(index));
     }
@@ -150,18 +174,41 @@ public class PrizeWheel : MonoBehaviour
 
     private void ApplyReward(WheelSegment seg)
     {
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
         switch (seg.reward)
         {
             case RewardType.Coins:
-                Debug.Log($"Ganaste Ítem: {seg.name} x{seg.amount}");
+                PlayerWallet wallet = player.GetComponentInChildren<PlayerWallet>();
+                wallet.Add(1);
                 break;
             case RewardType.Heal:
-                Debug.Log($"Ganaste Ítem: {seg.name} x{seg.amount}");
+                Health health = player.GetComponentInChildren<Health>();
+                health.IncrementHealth(1);
                 break;
-            case RewardType.Item:
-                Debug.Log($"Ganaste Ítem: {seg.name} x{seg.amount}");
+            case RewardType.Speed:
+                Movement movement = player.GetComponentInChildren<Movement>();
+                movement.IncrementSpeed(1);
                 break;
-            case RewardType.Nothing:
+            case RewardType.Range:
+                AttackController attack = player.GetComponentInChildren<AttackController>();
+                attack.IncrementBulletLifetime(0.2f);
+                break;
+            case RewardType.NoCoins:
+                PlayerWallet nowallet = player.GetComponentInChildren<PlayerWallet>();
+                nowallet.Spend(1);
+                break;
+            case RewardType.NoHeal:
+                Health nohealth = player.GetComponentInChildren<Health>();
+                nohealth.DecrementHealth(1);
+                break;
+            case RewardType.NoSpeed:
+                Movement nomovement = player.GetComponentInChildren<Movement>();
+                nomovement.DecrementSpeed(1);
+                break;
+            case RewardType.NoRange:
+                AttackController noattack = player.GetComponentInChildren<AttackController>();
+                noattack.DecrementBulletLifetime(0.2f);
+                break;
             default:
                 // Nada
                 break;
@@ -248,6 +295,7 @@ public class PrizeWheel : MonoBehaviour
                 txt.fontSize = labelFontSize;
                 txt.font = labelFont ? labelFont : Resources.GetBuiltinResource<Font>("Arial.ttf");
                 txt.raycastTarget = false;
+                
 
                 // color legible según fondo
                 txt.color = autoTextContrast ? AutoTextColor(c) : Color.white;
@@ -264,8 +312,6 @@ public class PrizeWheel : MonoBehaviour
         {
             case RewardType.Coins: return $"{seg.name} +{seg.amount}";
             case RewardType.Heal: return $"{seg.name} +{seg.amount}";
-            case RewardType.Item: return seg.name;
-            case RewardType.Nothing:
             default: return seg.name;
         }
     }

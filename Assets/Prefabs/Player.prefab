@@ -121,10 +121,10 @@ MonoBehaviour:
   rb: {fileID: 8893750846947936627}
   arCamera: {fileID: 0}
   attackController: {fileID: 4266369032228702476}
-  moveSpeed: 0.5
+  moveSpeed: 3
   turnSpeed: 540
   faceInstantly: 0
-  config: {fileID: 11400000, guid: 0c9e051d6f1035948ada5b219da8d964, type: 2}
+  config: {fileID: 0}
   speedSource: {fileID: 0}
   dashSource: {fileID: 0}
   animator: {fileID: 5119069390770782535}
@@ -309,5 +309,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 5119069390770782535}
-  fireballPrefab: {fileID: 8129785972816200040, guid: 7de4b50ebc56f2e4383bb7be42931e8a, type: 3}
+  fireballPrefab: {fileID: -3980775075144627359, guid: 7de4b50ebc56f2e4383bb7be42931e8a, type: 3}
   firePoint: {fileID: 6738847221612533841}

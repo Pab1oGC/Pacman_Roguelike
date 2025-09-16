@@ -262,6 +262,10 @@ PrefabInstance:
       propertyPath: m_Constraints
       value: 126
       objectReference: {fileID: 0}
+    - target: {fileID: 6031177296997235482, guid: 5d742cbaa12407146bd3454131628b6e, type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 7286188083591477313, guid: 5d742cbaa12407146bd3454131628b6e, type: 3}
       propertyPath: m_Size.x
       value: 9.711504
@@ -381,3 +385,5 @@ MonoBehaviour:
   - {fileID: 294004905046644218}
   - {fileID: 679297029630654806}
   - {fileID: 1072002193500616998}
+  buffon: {fileID: 1462481903318128389, guid: 7a531636daf27a2498cbecfdaa872811, type: 3}
+  buffonSpawn: {fileID: 223008305888916569}

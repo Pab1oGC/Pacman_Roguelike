@@ -51,6 +51,7 @@ public class Movement : MonoBehaviour
     {
         if (!rb) rb = GetComponent<Rigidbody>();
         if (!arCamera) arCamera = Camera.main;
+        
 
         // --- INPUT SOURCE: D-PAD PRIMERO ---
         joystick = null
@@ -175,4 +176,11 @@ public class Movement : MonoBehaviour
         public StaticSpeedProvider(float v) { CurrentSpeed = Mathf.Max(0f, v); }
     }
     public void SetInputSource(IMoveInputSource src) => _inputSource = src;
+
+    public void IncrementSpeed(float amount)
+    {
+        config.moveSpeed += amount;
+    }
+
+    public void DecrementSpeed(float amount) { if (config.moveSpeed <= 1) return; config.moveSpeed -= amount; }
 }

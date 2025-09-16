@@ -1244,9 +1244,9 @@ MonoBehaviour:
   movementLock: 0.15
   deathVfxPrefab: {fileID: 3548588485384254792, guid: 2f9e7dc163581394da1e00b561eed65d, type: 3}
   deathVfxLifetime: 2
-  dropChance: 0.9
+  dropChance: 0.7
   coinPrefab: {fileID: 4560948008629810073, guid: c59b4f4811b640e4aa3338fec8a0e2f8, type: 3}
-  coinAmountRange: {x: 1, y: 3}
+  coinAmountRange: {x: 1, y: 2}
   scatterRadius: 0.5
   scatterImpulse: 2
   destroyDelay: 0.1

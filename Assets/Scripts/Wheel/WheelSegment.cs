@@ -14,4 +14,4 @@ public class WheelSegment
     public Sprite icon;                    // opcional (no imprescindible)
 }
 
-public enum RewardType { Coins, Heal, Nothing, Item }
+public enum RewardType { Coins, Heal, Speed, Range, NoCoins, NoHeal, NoSpeed, NoRange }
