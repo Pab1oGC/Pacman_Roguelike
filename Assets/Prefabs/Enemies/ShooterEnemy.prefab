@@ -1232,6 +1232,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 1
+  canAct: 0
+  dealContactDamage: 1
+  contactDamage: 1
+  contactCooldown: 0.5
+  selfDestructOnHit: 0
+  playerTag: Player
+  doKnockback: 1
+  knockbackForce: 4
+  knockbackUpForce: 0.5
+  movementLock: 0.15
+  deathVfxPrefab: {fileID: 3548588485384254792, guid: 2f9e7dc163581394da1e00b561eed65d, type: 3}
+  deathVfxLifetime: 2
+  dropChance: 0.9
+  coinPrefab: {fileID: 4560948008629810073, guid: c59b4f4811b640e4aa3338fec8a0e2f8, type: 3}
+  coinAmountRange: {x: 1, y: 3}
+  scatterRadius: 0.5
+  scatterImpulse: 2
+  destroyDelay: 0.1
   bulletPrefab: {fileID: 7762724021669795424, guid: 7d19250669a4cde458feec1bf607c7cc, type: 3}
   firePoint: {fileID: 2599031957490774217}
   fireRate: 1

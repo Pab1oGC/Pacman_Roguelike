@@ -17,8 +17,8 @@ public class Enemy : MonoBehaviour
 
     [Header("Knockback al Player")]
     [SerializeField] private bool doKnockback = true;
-    [SerializeField] private float knockbackForce = 6f;   // fuerza horizontal
-    [SerializeField] private float knockbackUpForce = 2f; // empujón vertical
+    [SerializeField] private float knockbackForce = 1f;   // fuerza horizontal
+    [SerializeField] private float knockbackUpForce = 1f; // empujón vertical
     [SerializeField] private float movementLock = 0.15f;
 
     [Header("Muerte & Loot")]

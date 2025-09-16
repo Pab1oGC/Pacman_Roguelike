@@ -42,6 +42,11 @@ public class Movement : MonoBehaviour
     public void SetSpeedProvider(ISpeedProvider sp) => _speed = sp;
     public void SetDashController(IDashController dc) => _dash = dc;
 
+    private bool _movementLocked = false;
+    private Coroutine _unlockCoro;
+
+    public bool IsMovementLocked => _movementLocked;
+
     private void Awake()
     {
         if (!rb) rb = GetComponent<Rigidbody>();
@@ -94,6 +99,13 @@ public class Movement : MonoBehaviour
 
     private void FixedUpdate()
     {
+
+        if (_movementLocked)
+        {
+            if (animator) animator.SetFloat("Speed", 0f, 0.1f, Time.deltaTime);
+            return; // no movemos ni rotamos: deja que la física haga el knockback
+        }
+
         if (attackController != null && attackController.IsAttacking)
         {
             // No mover mientras ataca
@@ -130,6 +142,26 @@ public class Movement : MonoBehaviour
                 childRb.MoveRotation(newRot);
             }
         }
+    }
+
+    public void SetMovementLocked(bool locked)
+    {
+        _movementLocked = locked;
+        if (locked && animator) animator.SetFloat("Speed", 0f, 0.1f, Time.deltaTime);
+    }
+
+    public void LockMovementFor(float seconds)
+    {
+        SetMovementLocked(true);
+        if (_unlockCoro != null) StopCoroutine(_unlockCoro);
+        _unlockCoro = StartCoroutine(UnlockAfter(seconds));
+    }
+
+    private IEnumerator UnlockAfter(float t)
+    {
+        yield return new WaitForSeconds(t);
+        SetMovementLocked(false);
+        _unlockCoro = null;
     }
 
     private float UseCfgMoveSpeed() => config ? config.moveSpeed : moveSpeed;
