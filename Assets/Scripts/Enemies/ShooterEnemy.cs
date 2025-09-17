@@ -50,12 +50,12 @@ public class ShooterEnemy : Enemy
 
 
         // Disparar
-        fireCooldown -= Time.deltaTime;
+        /*fireCooldown -= Time.deltaTime;
         if (fireCooldown <= 0f)
         {
             Shoot();
             fireCooldown = 1f / fireRate;
-        }
+        }*/
     }
 
     public void Shoot()

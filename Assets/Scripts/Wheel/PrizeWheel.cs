@@ -8,6 +8,7 @@ public class PrizeWheel : MonoBehaviour
     [Header("Referencias UI")]
     [SerializeField] private RectTransform wheel;   // el círculo que gira
     [SerializeField] private Button spinButton;     // botón “Girar”
+    [SerializeField] private Button closeButton;
     [SerializeField] private RectTransform wedgesRoot; // opcional: contenedor de cuñas generadas
 
     [Header("Segmentos")]
@@ -129,6 +130,8 @@ public class PrizeWheel : MonoBehaviour
         spinning = true;
         if (spinButton) spinButton.interactable = false;
 
+        closeButton.interactable = false ;
+
         float randInside = Random.Range(-SegAngle * 0.5f * randomInsideSegment,
                                          SegAngle * 0.5f * randomInsideSegment);
         float center = GetSegmentCenterDeg(index) + randInside;
@@ -162,6 +165,8 @@ public class PrizeWheel : MonoBehaviour
         ApplyReward(segments[index]);
 
         spinning = false;
+
+        closeButton.interactable = true;
         if (spinButton) spinButton.interactable = true;
     }
 

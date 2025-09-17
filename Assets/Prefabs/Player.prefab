@@ -42,6 +42,7 @@ GameObject:
   - component: {fileID: 3271894558659917611}
   - component: {fileID: 4215800223667458577}
   - component: {fileID: 7640271387323929491}
+  - component: {fileID: 668075514818008675}
   - component: {fileID: -8499586697560581733}
   - component: {fileID: 1987639285720776501}
   - component: {fileID: 1185843376530180349}
@@ -128,6 +129,22 @@ MonoBehaviour:
   speedSource: {fileID: 0}
   dashSource: {fileID: 0}
   animator: {fileID: 5119069390770782535}
+--- !u!114 &668075514818008675
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4217805844949086149}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2667c26386a3654ba08744b2e47edc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackController: {fileID: 4266369032228702476}
+  facing: {fileID: 3369642784169392318}
+  snapFaceOnFire: 1
+  rotateSpeed: 999
 --- !u!114 &-8499586697560581733
 MonoBehaviour:
   m_ObjectHideFlags: 0

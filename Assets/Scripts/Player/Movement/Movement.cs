@@ -179,8 +179,8 @@ public class Movement : MonoBehaviour
 
     public void IncrementSpeed(float amount)
     {
-        config.moveSpeed += amount;
+        moveSpeed += amount;
     }
 
-    public void DecrementSpeed(float amount) { if (config.moveSpeed <= 1) return; config.moveSpeed -= amount; }
+    public void DecrementSpeed(float amount) { if (moveSpeed <= 1) return; moveSpeed -= amount; }
 }
