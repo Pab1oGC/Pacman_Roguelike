@@ -52,7 +52,7 @@ public class RoomBehaviour : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            CameraController.Instance.SetTargetRoom(roomCenter.position);
+            //CameraController.Instance.SetTargetRoom(roomCenter.position);
             Debug.Log("Entro");
         }
     }

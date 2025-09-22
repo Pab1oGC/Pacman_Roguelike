@@ -83,7 +83,7 @@ public class Movement : MonoBehaviour
         _rotationPolicy = UseCfgFaceInstantly() ? (IRotationPolicy)new InstantRotationPolicy()
                                                : new SmoothRotationPolicy();
         _motor = new RigidbodyMotor();
-        _speed = speedSource as ISpeedProvider ?? new StaticSpeedProvider(UseCfgMoveSpeed());
+        _speed = speedSource as ISpeedProvider;
         _dash = dashSource as IDashController;
     }
 
@@ -116,7 +116,7 @@ public class Movement : MonoBehaviour
 
         float baseSpeed = _speed?.CurrentSpeed ?? UseCfgMoveSpeed();
         float speed = baseSpeed * Mathf.Clamp01(_input.magnitude);
-        animator.SetFloat("Speed", speed * 2.5f, 0.1f, Time.deltaTime);
+        animator.SetFloat("Speed", speed * 20.5f, 0.1f, Time.deltaTime);
 
         if (_dash != null && (_dash.IsDashing || _dash.IsOnCooldown && _input.sqrMagnitude < 1e-6f))
             return;
@@ -172,15 +172,11 @@ public class Movement : MonoBehaviour
     // ---- Implementaciones auxiliares ----
     private sealed class StaticSpeedProvider : ISpeedProvider
     {
-        public float CurrentSpeed { get; private set; }
+        public float CurrentSpeed { get; set; }
         public StaticSpeedProvider(float v) { CurrentSpeed = Mathf.Max(0f, v); }
     }
     public void SetInputSource(IMoveInputSource src) => _inputSource = src;
 
-    public void IncrementSpeed(float amount)
-    {
-        moveSpeed += amount;
-    }
-
-    public void DecrementSpeed(float amount) { if (moveSpeed <= 1) return; moveSpeed -= amount; }
+    public void IncrementSpeed(float amount) { moveSpeed = Mathf.Max(0f, moveSpeed + amount); }
+    public void DecrementSpeed(float amount) { moveSpeed = Mathf.Max(0f, moveSpeed - amount); }
 }

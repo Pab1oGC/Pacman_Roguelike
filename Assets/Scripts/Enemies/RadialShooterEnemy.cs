@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,6 +15,11 @@ public class RadialShooterEnemy : Enemy
     public float minDistance = 3f;
     private float rotationSpeed = 2f;
     public Rigidbody rb;
+
+    [Header("Disparo")]
+    [SerializeField] private Transform shootOrigin;     // ← ASÍGNALO en el prefab al centro/altura del pecho
+    [SerializeField] private float spawnDistance = 0.9f; // antes estaba hardcodeado en el método
+    [SerializeField] private float shootHeightOffset = 0f;
 
     protected override void Start()
     {
@@ -36,7 +41,7 @@ public class RadialShooterEnemy : Enemy
         if (lookDirection != Vector3.zero)
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDirection), Time.deltaTime * rotationSpeed);
 
-        // Mantener distancia m�nima
+        // Mantener distancia mínima
         if (distance > minDistance)
         {
             Vector3 targetPos = player.position - direction.normalized * minDistance;
@@ -58,17 +63,26 @@ public class RadialShooterEnemy : Enemy
 
     void ShootRadial()
     {
-        float angleStep = 360f / bulletsPerWave;
-        float spawnDistance = 0.9f; // distancia desde el centro del enemigo
+        if (!bulletPrefab) return;
+
+        float angleStep = 360f / Mathf.Max(1, bulletsPerWave);
+
+        // Base en LOCAL del enemigo/origen
+        Quaternion baseRot = shootOrigin.rotation;
+        Vector3 basePos = shootOrigin.position + Vector3.up * shootHeightOffset;
+
         for (int i = 0; i < bulletsPerWave; i++)
         {
             float angle = i * angleStep;
-            Quaternion rot = Quaternion.Euler(0, angle, 0);
 
-            // Vector de desplazamiento
-            Vector3 offset = rot * Vector3.forward * spawnDistance;
+            // Rotación final = rotación del enemigo/origen * giro radial
+            Quaternion rot = baseRot * Quaternion.Euler(0f, angle, 0f);
 
-            Instantiate(bulletPrefab, transform.position + offset, rot);
+            // Offset radial en el plano local del origen, convertido a mundo
+            Vector3 localForward = rot * Vector3.forward;              // ya en mundo
+            Vector3 spawnPos = basePos + localForward * spawnDistance; // a cierta distancia del modelo
+
+            Instantiate(bulletPrefab, spawnPos, rot);
         }
     }
 

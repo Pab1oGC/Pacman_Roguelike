@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
 public class PanelWhellControl : MonoBehaviour
@@ -8,12 +9,64 @@ public class PanelWhellControl : MonoBehaviour
     [SerializeField] private GameObject panel;     // puedes arrastrarlo si quieres
     [SerializeField] private string panelTag = "Panel";
     [SerializeField] private bool openOnPlayerCollision = true;
+    [SerializeField] private GameObject joystickMovement;
+    [SerializeField] private GameObject joystickAttack;
+    [Header("Refs")]
+    public Camera arCamera;                // Asigna tu ARCamera (Vuforia/AR Foundation)
+    [Tooltip("Opcional: solo detectar estos layers")]
+    public LayerMask hitMask = ~0;
 
     private void Awake()
     {
         // Si no está asignado, intenta encontrarlo INCLUYENDO inactivos
         if (panel == null)
             panel = FindInactiveByTagAcrossLoadedScenes(panelTag);
+
+        joystickMovement = GameObject.FindGameObjectWithTag("JoystickMove");
+        joystickAttack = GameObject.FindGameObjectWithTag("JoystickAttack");
+    }
+
+    private void Update()
+    {
+        // Bloquear si tocaste UI
+        if (IsPointerOverUI()) return;
+
+        // Mouse en Editor
+        if (Input.GetMouseButtonDown(0))
+            TryRaycast(Input.mousePosition);
+
+        // Touch en móvil
+        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+            TryRaycast(Input.GetTouch(0).position);
+    }
+
+    bool IsPointerOverUI()
+    {
+        if (EventSystem.current == null) return false;
+#if UNITY_EDITOR
+        return EventSystem.current.IsPointerOverGameObject();
+#else
+        // En móvil hay que pasar el fingerId
+        return EventSystem.current.IsPointerOverGameObject(Input.touchCount > 0 ? Input.GetTouch(0).fingerId : -1);
+#endif
+    }
+
+    void TryRaycast(Vector2 screenPos)
+    {
+        if (arCamera == null) arCamera = Camera.main;
+        Ray ray = arCamera.ScreenPointToRay(screenPos);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f, hitMask, QueryTriggerInteraction.Ignore))
+        {
+            if (!openOnPlayerCollision) return;
+            if (panel != null)
+            {
+                panel.SetActive(true);
+                joystickMovement.SetActive(false);
+                joystickAttack.SetActive(false);
+            }
+                
+        }
     }
 
     private void OnEnable()
@@ -31,14 +84,19 @@ public class PanelWhellControl : MonoBehaviour
 
     public void ClosePopUp()
     {
-        if (panel != null) panel.SetActive(false);
+        if (panel != null)
+        {
+            panel.SetActive(false);
+            joystickMovement.SetActive(true);
+            joystickAttack.SetActive(true);
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (!openOnPlayerCollision) return;
+        /*if (!openOnPlayerCollision) return;
         if (collision.gameObject.CompareTag("Player") && panel != null)
-            panel.SetActive(true);
+            panel.SetActive(true);*/
     }
 
     // --- Helpers ---

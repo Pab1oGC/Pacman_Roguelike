@@ -40,6 +40,8 @@ public class PrizeWheel : MonoBehaviour
     [Header("Costo por giro")]
     [SerializeField] private int spinCost = 1;
 
+    [SerializeField] private ToastServiceMB toasts;
+
     // Player (auto-bind estilo HeartsUI)
     private PlayerWallet wallet;
     private Health playerHealth;
@@ -103,6 +105,7 @@ public class PrizeWheel : MonoBehaviour
         if (!wallet.Spend(spinCost))
         {
             Debug.LogWarning($"[PrizeWheel] Monedas insuficientes. Necesitas {spinCost}.");
+            toasts.Enqueue("Monedas insuficientes", 1.6f, ToastType.Error);
             return; // bloquea el giro si no alcanza
         }
         // --- FIN NUEVO ---
@@ -192,11 +195,11 @@ public class PrizeWheel : MonoBehaviour
                 break;
             case RewardType.Speed:
                 Movement movement = player.GetComponentInChildren<Movement>();
-                movement.IncrementSpeed(1);
+                movement.IncrementSpeed(0.025f);
                 break;
             case RewardType.Range:
                 AttackController attack = player.GetComponentInChildren<AttackController>();
-                attack.IncrementBulletLifetime(0.2f);
+                attack.IncrementBulletLifetime(0.15f);
                 break;
             case RewardType.NoCoins:
                 PlayerWallet nowallet = player.GetComponentInChildren<PlayerWallet>();
@@ -208,11 +211,11 @@ public class PrizeWheel : MonoBehaviour
                 break;
             case RewardType.NoSpeed:
                 Movement nomovement = player.GetComponentInChildren<Movement>();
-                nomovement.DecrementSpeed(1);
+                nomovement.DecrementSpeed(0.025f);
                 break;
             case RewardType.NoRange:
                 AttackController noattack = player.GetComponentInChildren<AttackController>();
-                noattack.DecrementBulletLifetime(0.2f);
+                noattack.DecrementBulletLifetime(0.15f);
                 break;
             default:
                 // Nada

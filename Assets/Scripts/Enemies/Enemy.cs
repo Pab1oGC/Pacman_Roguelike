@@ -1,13 +1,14 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
     public float health = 3f;
     public bool canAct = false;
 
-    [Header("Da�o por contacto")]
+    [Header("Daño por contacto")]
     [SerializeField] private bool dealContactDamage = true;
     [SerializeField] private float contactDamage = 1f;
     [SerializeField] private float contactCooldown = 0.5f;
@@ -18,7 +19,7 @@ public class Enemy : MonoBehaviour
     [Header("Knockback al Player")]
     [SerializeField] private bool doKnockback = true;
     [SerializeField] private float knockbackForce = 1f;   // fuerza horizontal
-    [SerializeField] private float knockbackUpForce = 1f; // empuj�n vertical
+    [SerializeField] private float knockbackUpForce = 1f; // empujón vertical
     [SerializeField] private float movementLock = 0.15f;
 
     [Header("Muerte & Loot")]
@@ -32,6 +33,10 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float scatterImpulse = 2f;
 
     [SerializeField] private float destroyDelay = 0.1f;
+
+    [SerializeField] private float coinSpawnForward = 0.6f; // distancia adelante del enemigo
+    [SerializeField] private float coinSpawnUp = 0.1f;      // un pelín arriba
+    [SerializeField] private float coinScatter = 0.25f;
 
     private bool isDead = false;
 
@@ -75,21 +80,54 @@ public class Enemy : MonoBehaviour
         if (!coinPrefab) return;
         if (Random.value > dropChance) return;
 
+        // Punto base: frente al enemigo + un pelín arriba
+        Vector3 basePos = transform.position
+                        + transform.forward * coinSpawnForward
+                        + Vector3.up * coinSpawnUp;
+
         int amount = Random.Range(coinAmountRange.x, coinAmountRange.y + 1);
         for (int i = 0; i < amount; i++)
         {
-            var offset = Random.insideUnitSphere * scatterRadius;
-            offset.y = Mathf.Abs(offset.y); // evita aparecer bajo el piso
+            // Pequeña dispersión plana alrededor del punto base
+            Vector2 circle = Random.insideUnitCircle * coinScatter;
+            Vector3 spawnPos = basePos + new Vector3(circle.x, 0f, circle.y);
 
-            var coin = Instantiate(coinPrefab, transform.position + offset, Quaternion.identity);
+            var coin = Instantiate(coinPrefab, spawnPos, Quaternion.identity);
 
             if (coin.TryGetComponent<Rigidbody>(out var rb))
             {
-                var dir = (coin.transform.position - transform.position).normalized + Vector3.up * 0.5f;
+                // Impulso radial + un poquito hacia arriba
+                Vector3 dir = (spawnPos - basePos);
+                dir.y = 0f;
+                if (dir.sqrMagnitude < 1e-4f) dir = transform.forward; // por si sale en el centro
+                dir = dir.normalized + Vector3.up * 0.5f;
                 rb.AddForce(dir * scatterImpulse, ForceMode.Impulse);
             }
         }
     }
+
+    private Vector3 GetDeathSpawnPoint()
+    {
+        // Tomamos el centro real (con escala aplicada)
+        Vector3 center = transform.position;
+        if (TryGetComponent<Collider>(out var c)) center = c.bounds.center;
+        else if (TryGetComponent<Renderer>(out var r)) center = r.bounds.center;
+
+        // Intento A: raycast hacia abajo (si el piso tiene collider)
+        Vector3 origin = center + Vector3.up * 2f;
+        if (Physics.Raycast(origin, Vector3.down, out RaycastHit hit, 50f, ~0, QueryTriggerInteraction.Ignore))
+            return hit.point + Vector3.up * 0.06f;
+
+        // Intento C: base del propio bounds (por si acaso)
+        if (TryGetComponent<Collider>(out var col2))
+            return new Vector3(center.x, col2.bounds.min.y + 0.06f, center.z);
+        if (TryGetComponent<Renderer>(out var r2))
+            return new Vector3(center.x, r2.bounds.min.y + 0.06f, center.z);
+
+        return transform.position;
+    }
+
+
 
     private void OnCollisionEnter(Collision other)
     {
@@ -109,7 +147,7 @@ public class Enemy : MonoBehaviour
         if (!other.CompareTag(playerTag)) return;
         if (Time.time - _lastContactTime < contactCooldown) return;
 
-        // 1) Da�o
+        // 1) Daño
         if (other.TryGetComponent<Health>(out var hp))
         {
             hp.ApplyDamage(contactDamage);
@@ -118,10 +156,10 @@ public class Enemy : MonoBehaviour
             // 2) Knockback
             if (doKnockback)
             {
-                // direcci�n desde el enemigo hacia el jugador (solo plano XZ)
+                // dirección desde el enemigo hacia el jugador (solo plano XZ)
                 Vector3 dir = other.transform.position - transform.position;
                 dir.y = 0f;
-                if (dir.sqrMagnitude < 0.0001f) dir = transform.forward; // por si est�n superpuestos
+                if (dir.sqrMagnitude < 0.0001f) dir = transform.forward; // por si están superpuestos
                 dir.Normalize();
 
                 if (other.TryGetComponent<PlayerKnockback>(out var kb))
@@ -130,13 +168,13 @@ public class Enemy : MonoBehaviour
                 }
                 else if (other.attachedRigidbody != null)
                 {
-                    // Fallback directo por f�sica
+                    // Fallback directo por física
                     Vector3 impulse = dir * knockbackForce + Vector3.up * knockbackUpForce;
                     other.attachedRigidbody.AddForce(impulse, ForceMode.Impulse);
                 }
             }
 
-            // 3) Kamikaze / auto-destrucci�n
+            // 3) Kamikaze / auto-destrucción
             if (selfDestructOnHit)
                 Die(); // respeta VFX y drop
         }

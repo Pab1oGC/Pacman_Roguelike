@@ -8,15 +8,21 @@ public class Bullet : MonoBehaviour
     public float damage = 1f;
     public bool isBulletPlayer;
     // Start is called before the first frame update
+
+    private float destroyTime;
+    private void Awake()
+    {
+        destroyTime = timeToDestroy;
+    }
     void Start()
     {
-        Destroy(gameObject, timeToDestroy);
+        Destroy(gameObject, destroyTime);
     }
 
     // Update is called once per frame
     void Update()
     {
-        transform.Translate(Vector3.forward * 4f * Time.deltaTime);
+        transform.Translate(Vector3.forward * 0.24f * Time.deltaTime);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -31,6 +37,11 @@ public class Bullet : MonoBehaviour
         {
             Health player = other.GetComponent<Health>();
             player.ApplyDamage(damage);
+            Destroy(gameObject);
+        }
+        
+        if (other.CompareTag("Wall"))
+        {
             Destroy(gameObject);
         }
     }

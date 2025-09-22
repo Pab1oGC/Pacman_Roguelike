@@ -150,7 +150,10 @@ MonoBehaviour:
   scatterRadius: 0.5
   scatterImpulse: 2
   destroyDelay: 0.1
-  speed: 2.5
+  coinSpawnForward: 0.06
+  coinSpawnUp: 0.01
+  coinScatter: 0.025
+  speed: 0.09
 --- !u!136 &9210268491362097441
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -161,10 +164,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.34212363
-  m_Height: 0.68424726
+  m_Radius: 0.3161427
+  m_Height: 0.6322854
   m_Direction: 1
-  m_Center: {x: 0.050406277, y: 0.3035969, z: 0.13738608}
+  m_Center: {x: 0.017497003, y: 0.32438174, z: 0.113137215}
 --- !u!54 &3231086755824633731
 Rigidbody:
   m_ObjectHideFlags: 0

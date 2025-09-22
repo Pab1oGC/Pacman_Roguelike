@@ -8,7 +8,7 @@ public class UIAimAttackPad : MonoBehaviour, IPointerDownHandler, IPointerUpHand
     [Header("Refs")]
     [SerializeField] private RectTransform padArea;        // este mismo RectTransform si lo dejas vacío
     [SerializeField] private RectTransform arrowUI;        // flecha UI (pivot en (0.5,0), apunta hacia arriba)
-    [SerializeField] private RectTransform knob;                   // opcional: puntito que sigue el dedo
+    [SerializeField] private RectTransform knob;           // opcional: puntito que sigue el dedo
 
     [Header("Ajustes de input")]
     [SerializeField] private float maxRadius = 140f;       // px de arrastre máximo
@@ -21,18 +21,21 @@ public class UIAimAttackPad : MonoBehaviour, IPointerDownHandler, IPointerUpHand
     [SerializeField] private float playerArrowLenMax = 180f;
 
     [Header("Aim en mundo (LineRenderer)")]
-    [SerializeField] private LineRenderer worldLine;     // opcional; si está vacío lo creo en runtime
+    [SerializeField] private LineRenderer worldLine;       // opcional; si está vacío lo creo en runtime
     [SerializeField] private float worldLineMaxDistance = 12f;
     [SerializeField] private LayerMask worldLineMask = ~0; // todo por defecto
-    [SerializeField] private float worldLineHeight = 1.0f; // altura del origen (y) sobre el player
-    [SerializeField] private Gradient worldLineColor;       // opcional: colores/alpha de la línea
-    [SerializeField] private float worldLineWidth = 0.06f;  // grosor
+    [SerializeField] private float worldLineHeight = 1.0f; // altura base sobre el player (m)
+    [SerializeField] private Gradient worldLineColor;      // opcional: colores/alpha de la línea
+    [SerializeField] private float worldLineWidth = 0.06f; // grosor base (m)
     [SerializeField] private GameObject hitDotPrefab;
 
     [Header("Player binding")]
     [SerializeField] private string playerTag = "Player";
 
-    public Camera _cam;
+    public Camera _cam;                                    // ARCamera u otra
+    private Canvas _canvas;                                // Canvas que contiene el pad
+    private bool _canvasIsOverlay;                         // si es Overlay => camera=null en RectTransformUtility
+
     private RectTransform _rt;
     private Vector2 _pressPos;
     private int _activePointerId = -100;
@@ -42,12 +45,31 @@ public class UIAimAttackPad : MonoBehaviour, IPointerDownHandler, IPointerUpHand
     private Transform _player;            // world
     private bool _hadDirection;
     private Vector2 _knobHome;
+    private GameObject _hitDot;
 
     private void Awake()
     {
+        // Rect del pad
         _rt = padArea ? padArea : (RectTransform)transform;
-        _cam = Camera.main;
+
+        // Canvas contenedor y modo
+        _canvas = GetComponentInParent<Canvas>();
+        _canvasIsOverlay = _canvas && _canvas.renderMode == RenderMode.ScreenSpaceOverlay;
+
+        // Cámara a usar para mundo y UI
+        if (!_cam) _cam = Camera.main;
+        if (!_cam) _cam = FindObjectOfType<Camera>();
+
+        // Crear/Configurar línea desde ya
+        SetupWorldLine();
+        
+
+        // Bind al player en cuanto aparezca
         StartCoroutine(WaitAndBindPlayer());
+
+        SetWorldLineActive(false);
+
+        // UI inicial
         ShowArrow(false);
         if (knob) _knobHome = knob.anchoredPosition;
         if (playerArrow) playerArrow.gameObject.SetActive(false);
@@ -63,11 +85,21 @@ public class UIAimAttackPad : MonoBehaviour, IPointerDownHandler, IPointerUpHand
         }
         _player = go.transform;
         _relay = go.GetComponentInChildren<AimAttackRelay>();
-        if (_relay == null)
+        if (_relay == null) _relay = go.AddComponent<AimAttackRelay>();
+
+        // Re-parent de la línea al player (si existe), una vez que lo tenemos
+        if (worldLine)
         {
-            // Si no existe, lo añadimos para no romper flujo
-            _relay = go.AddComponent<AimAttackRelay>();
+            worldLine.transform.SetParent(_player, false);
         }
+    }
+
+    // Cámara correcta para RectTransformUtility según modo del Canvas
+    private Camera GetCanvasCamera()
+    {
+        if (_canvasIsOverlay) return null;                    // Overlay: pasar null
+        if (_canvas && _canvas.worldCamera) return _canvas.worldCamera;
+        return _cam;                                          // fallback
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -75,13 +107,14 @@ public class UIAimAttackPad : MonoBehaviour, IPointerDownHandler, IPointerUpHand
         if (_activePointerId != -100) return; // ya hay otro dedo activo en esta UI
         _activePointerId = eventData.pointerId;
 
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(_rt, eventData.position, _cam, out _pressPos);
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(_rt, eventData.position, GetCanvasCamera(), out _pressPos);
         _aiming = true;
         _hadDirection = false;
 
         if (!requireHoldToShowArrow) ShowArrow(true);
-        if (knob) { knob.anchoredPosition = _pressPos; }
+        if (knob) knob.anchoredPosition = _pressPos;
         if (playerArrow) playerArrow.gameObject.SetActive(true);
+
         SetWorldLineActive(true);
         UpdateWorldAimVisual(Vector3.zero);
         UpdateVisuals(Vector2.zero);
@@ -92,7 +125,7 @@ public class UIAimAttackPad : MonoBehaviour, IPointerDownHandler, IPointerUpHand
         if (eventData.pointerId != _activePointerId || !_aiming) return;
 
         Vector2 localPos;
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(_rt, eventData.position, _cam, out localPos);
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(_rt, eventData.position, GetCanvasCamera(), out localPos);
 
         Vector2 delta = localPos - _pressPos;
         float mag = delta.magnitude;
@@ -109,7 +142,7 @@ public class UIAimAttackPad : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 
         // clamp radio
         float clampedMag = Mathf.Min(mag, maxRadius);
-        Vector2 dir = delta / mag; // normaliza
+        Vector2 dir = delta / (mag > 1e-5f ? mag : 1f); // seguro
         Vector2 clamped = dir * clampedMag;
 
         _aimDirUI = dir;
@@ -157,7 +190,7 @@ public class UIAimAttackPad : MonoBehaviour, IPointerDownHandler, IPointerUpHand
         {
             Vector3 screen = _cam.WorldToScreenPoint(_player.position);
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                (RectTransform)playerArrow.parent, screen, _cam, out var local);
+                (RectTransform)playerArrow.parent, screen, GetCanvasCamera(), out var local);
 
             playerArrow.anchoredPosition = local;
 
@@ -222,55 +255,64 @@ public class UIAimAttackPad : MonoBehaviour, IPointerDownHandler, IPointerUpHand
         {
             var go = new GameObject("AimLine", typeof(LineRenderer));
             worldLine = go.GetComponent<LineRenderer>();
-            // parented al player si ya lo tenemos; si no, quedará suelto y lo moveremos cada frame
-            if (_player) go.transform.SetParent(_player, false);
         }
 
         worldLine.useWorldSpace = true;
         worldLine.positionCount = 2;
-        worldLine.widthMultiplier = worldLineWidth;
         worldLine.numCornerVertices = 2;
         worldLine.numCapVertices = 2;
         worldLine.alignment = LineAlignment.View;
 
-        // Material y color
         if (worldLine.material == null)
         {
-            // material simple sin iluminación
             worldLine.material = new Material(Shader.Find("Sprites/Default"));
             worldLine.material.renderQueue = 3000; // transparente
         }
-        if (worldLineColor != null)
-            worldLine.colorGradient = worldLineColor;
-        else
-            worldLine.startColor = worldLine.endColor = new Color(1f, 1f, 1f, 0.9f);
+        if (worldLineColor != null) worldLine.colorGradient = worldLineColor;
+
+        // ancho base: lo ajustaremos por escala del player en UpdateWorldAimVisual
+        worldLine.widthMultiplier = worldLineWidth;
+
+        if (hitDotPrefab && _hitDot == null)
+        {
+            _hitDot = Instantiate(hitDotPrefab);
+            _hitDot.SetActive(false);
+        }
+        // Si ya tenemos player, parent aquí; si no, se hará al bind
+        if (_player) worldLine.transform.SetParent(_player, false);
+
+        var p = Vector3.zero;
+        worldLine.SetPosition(0, p);
+        worldLine.SetPosition(1, p);
+        worldLine.enabled = false;
     }
 
     private void SetWorldLineActive(bool on)
     {
-        if (worldLine) worldLine.enabled = on;
+        if (!worldLine) return;
+        worldLine.enabled = on;
 
-        if (hitDotPrefab)
+        if (!on)
         {
-            if (on)
-            {
-                if (!_hitDot && hitDotPrefab) _hitDot = Instantiate(hitDotPrefab);
-                if (_hitDot) _hitDot.SetActive(true);
-            }
-            else
-            {
-                if (_hitDot) _hitDot.SetActive(false);
-            }
+            // colapsa para que no se vea ni un frame
+            var p = worldLine.positionCount > 0 ? worldLine.GetPosition(0) : Vector3.zero;
+            worldLine.SetPosition(0, p);
+            worldLine.SetPosition(1, p);
         }
+
+        if (_hitDot) _hitDot.SetActive(on);
     }
-    private GameObject _hitDot;
 
     private void UpdateWorldAimVisual(Vector3 worldDir)
     {
         if (!worldLine) return;
 
-        // Si no hay player o no hay dirección, colapsa la línea en el origen
-        Vector3 origin = (_player ? _player.position : Vector3.zero) + Vector3.up * worldLineHeight;
+        // Origen: player + altura (compensa escala del player si cambió)
+        float scaleY = (_player ? _player.lossyScale.y : 1f);
+        Vector3 origin = (_player ? _player.position : Vector3.zero) + Vector3.up * (worldLineHeight * scaleY);
+
+        // Ajusta grosor según escala Y del player (opcional, pero útil si reescalaste todo)
+        worldLine.widthMultiplier = worldLineWidth * scaleY;
 
         if (_player == null || worldDir.sqrMagnitude < 1e-6f)
         {
@@ -280,7 +322,6 @@ public class UIAimAttackPad : MonoBehaviour, IPointerDownHandler, IPointerUpHand
             return;
         }
 
-        // Raycast para fin de línea
         Vector3 end = origin + worldDir.normalized * worldLineMaxDistance;
         if (Physics.Raycast(origin, worldDir, out var hit, worldLineMaxDistance, worldLineMask, QueryTriggerInteraction.Ignore))
         {
@@ -292,10 +333,7 @@ public class UIAimAttackPad : MonoBehaviour, IPointerDownHandler, IPointerUpHand
                 _hitDot.transform.rotation = Quaternion.LookRotation(hit.normal);
             }
         }
-        else if (_hitDot)
-        {
-            _hitDot.SetActive(false);
-        }
+        else if (_hitDot) _hitDot.SetActive(false);
 
         worldLine.SetPosition(0, origin);
         worldLine.SetPosition(1, end);
