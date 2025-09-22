@@ -58,14 +58,16 @@ public class PanelWhellControl : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit, 100f, hitMask, QueryTriggerInteraction.Ignore))
         {
-            if (!openOnPlayerCollision) return;
-            if (panel != null)
+            if (hit.collider.CompareTag("Buffon"))
             {
-                panel.SetActive(true);
-                joystickMovement.SetActive(false);
-                joystickAttack.SetActive(false);
+                if (!openOnPlayerCollision) return;
+                if (panel != null)
+                {
+                    panel.SetActive(true);
+                    joystickMovement.SetActive(false);
+                    joystickAttack.SetActive(false);
+                }
             }
-                
         }
     }
 

@@ -227,13 +227,13 @@ public class TapToPlace : MonoBehaviour
     {
         if (_planeMgr == null) return;
 
-        // Apaga/oculta demás planos
+        // Oculta TODOS los planos, incluso el seleccionado
         foreach (var p in _planeMgr.trackables)
         {
-            if (p.trackableId != keepPlane.trackableId)
-                p.gameObject.SetActive(false);
+            p.gameObject.SetActive(false);
         }
-        // Si quieres, desactiva el plane manager para no actualizar más
-        // _planeMgr.enabled = false;
+
+        // Desactiva el plane manager
+        _planeMgr.enabled = false;
     }
 }

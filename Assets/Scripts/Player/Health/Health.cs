@@ -53,7 +53,6 @@ public class Health : MonoBehaviour
 
     public void DecrementHealth(float amount) 
     { if (currentHealth <= 0f) return; 
-        currentHealth -= amount;
-        OnHealthChanged?.Invoke(currentHealth, maxHealth);
+        ApplyDamage(amount);
     }
 }

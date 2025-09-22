@@ -188,34 +188,42 @@ public class PrizeWheel : MonoBehaviour
             case RewardType.Coins:
                 PlayerWallet wallet = player.GetComponentInChildren<PlayerWallet>();
                 wallet.Add(1);
+                toasts.Enqueue("+1 Moneda", 1.9f, ToastType.Success);
                 break;
             case RewardType.Heal:
                 Health health = player.GetComponentInChildren<Health>();
                 health.IncrementHealth(1);
+                toasts.Enqueue("+1 Vida", 1.9f, ToastType.Success);
                 break;
             case RewardType.Speed:
                 Movement movement = player.GetComponentInChildren<Movement>();
                 movement.IncrementSpeed(0.025f);
+                toasts.Enqueue("Mayor velocidad", 1.9f, ToastType.Success);
                 break;
             case RewardType.Range:
                 AttackController attack = player.GetComponentInChildren<AttackController>();
                 attack.IncrementBulletLifetime(0.15f);
+                toasts.Enqueue("Mayor rango", 1.9f, ToastType.Success);
                 break;
             case RewardType.NoCoins:
                 PlayerWallet nowallet = player.GetComponentInChildren<PlayerWallet>();
                 nowallet.Spend(1);
+                toasts.Enqueue("-1 Moneda", 1.9f, ToastType.Info);
                 break;
             case RewardType.NoHeal:
                 Health nohealth = player.GetComponentInChildren<Health>();
                 nohealth.DecrementHealth(1);
+                toasts.Enqueue("-1 Vida", 1.9f, ToastType.Info);
                 break;
             case RewardType.NoSpeed:
                 Movement nomovement = player.GetComponentInChildren<Movement>();
                 nomovement.DecrementSpeed(0.025f);
+                toasts.Enqueue("Menor velocidad", 1.9f, ToastType.Info);
                 break;
             case RewardType.NoRange:
                 AttackController noattack = player.GetComponentInChildren<AttackController>();
                 noattack.DecrementBulletLifetime(0.15f);
+                toasts.Enqueue("Menor rango", 1.9f, ToastType.Info);
                 break;
             default:
                 // Nada
