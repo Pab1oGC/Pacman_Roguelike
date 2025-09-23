@@ -27,10 +27,14 @@ public class DungeonGenerator : MonoBehaviour
     }
 
     [Header("Config")]
-    public Vector2Int size = new Vector2Int(5, 3); // columnas x filas (grid)
+    public Vector2Int size = new Vector2Int(5, 3); // columnas x filas
     public Vector2 offset = new Vector2(6f, 6f);   // metros por tile (X/Z)
     public int startPos = 0;
     public Rule[] rooms;
+
+    [Header("Start room")]
+    public GameObject spawnRoomPrefab;   // <- NUEVO
+    private bool _spawnPlaced = false;   // <- NUEVO
 
     [Tooltip("Si true, genera en Start con size/offset actuales (útil en editor). En AR lo pondremos en false.")]
     public bool autoGenerate = true;
@@ -42,15 +46,14 @@ public class DungeonGenerator : MonoBehaviour
         if (autoGenerate) Run(size, offset);
     }
 
-    /// <summary>
-    /// Llamar desde AR: define grid y offset y genera.
-    /// </summary>
     public void Run(Vector2Int gridSize, Vector2 tileOffset)
     {
         size = new Vector2Int(Mathf.Max(1, gridSize.x), Mathf.Max(1, gridSize.y));
         offset = new Vector2(Mathf.Max(0.01f, tileOffset.x), Mathf.Max(0.01f, tileOffset.y));
 
-        // Limpia lo previamente generado (si rehaces)
+        // reset del flag de spawn para regeneraciones
+        _spawnPlaced = false;
+
         for (int i = transform.childCount - 1; i >= 0; i--)
 #if UNITY_EDITOR
             DestroyImmediate(transform.GetChild(i).gameObject);
@@ -69,6 +72,25 @@ public class DungeonGenerator : MonoBehaviour
             {
                 Cell currentCell = board[i + j * size.x];
                 if (!currentCell.visited) continue;
+
+                // === OVERRIDE: spawn en (0,0) una sola vez ===
+                if (i == 0 && j == 0 && !_spawnPlaced && spawnRoomPrefab != null)
+                {
+                    var startRoom = Instantiate(
+                        spawnRoomPrefab,
+                        new Vector3(0f, 0f, 0f),            // (0,0) de la grilla
+                        Quaternion.identity,
+                        transform
+                    ).GetComponent<RoomBehaviour>();
+
+                    if (startRoom != null)
+                        startRoom.UpdateRoom(currentCell.status);
+
+                    startRoom.name = "StartRoom 0-0";
+                    _spawnPlaced = true;
+                    continue; // no elijas otra room para (0,0)
+                }
+                // =============================================
 
                 int randomRoom = -1;
                 List<int> availableRooms = new List<int>();
@@ -103,7 +125,7 @@ public class DungeonGenerator : MonoBehaviour
             for (int j = 0; j < size.y; j++)
                 board.Add(new Cell());
 
-        int currentCell = startPos;
+        int currentCell = startPos; // ya parte en 0
         Stack<int> path = new Stack<int>();
         int k = 0;
 
