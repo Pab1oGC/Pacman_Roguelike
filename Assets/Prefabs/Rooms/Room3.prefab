@@ -67,6 +67,11 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7973538313113357229, guid: 5d742cbaa12407146bd3454131628b6e, type: 3}
   m_PrefabInstance: {fileID: 2961330088641034439}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &5169975002187632995 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7973538314438633892, guid: 5d742cbaa12407146bd3454131628b6e, type: 3}
+  m_PrefabInstance: {fileID: 2961330088641034439}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &3291379974489419018
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -84,5 +89,8 @@ MonoBehaviour:
   minEnemies: 1
   maxEnemies: 1
   spawnPoints: []
+  bossPrefab: {fileID: 9129582290969419150, guid: e7455a7f51a57194585c37fb743a84a1, type: 3}
+  bossSpawnPoint: {fileID: 5169975002187632995}
+  isBossRoom: 1
   buffon: {fileID: 0}
   buffonSpawn: {fileID: 0}

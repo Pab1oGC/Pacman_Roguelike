@@ -38,7 +38,8 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float coinSpawnUp = 0.1f;      // un pelín arriba
     [SerializeField] private float coinScatter = 0.25f;
 
-    private bool isDead = false;
+    protected bool isDead = false;
+
 
 
     protected virtual void Start()

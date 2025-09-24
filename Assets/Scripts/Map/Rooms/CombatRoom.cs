@@ -10,6 +10,11 @@ public class CombatRoom : MonoBehaviour
     [SerializeField] private int maxEnemies = 3;
     [SerializeField] private Transform[] spawnPoints;
 
+    [Header("Boss (Opcional)")]
+    [SerializeField] private GameObject bossPrefab;
+    [SerializeField] private Transform bossSpawnPoint;
+    [SerializeField] private bool isBossRoom = false; // Marcar la sala como Boss
+
     private RoomBehaviour room;
     private List<GameObject> spawnedEnemies = new List<GameObject>();
     private bool cleared = false;
@@ -34,8 +39,8 @@ public class CombatRoom : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            GameObject buffon = GameObject.FindGameObjectWithTag("Buffon");
-            Destroy(buffon);
+            GameObject buffonObj = GameObject.FindGameObjectWithTag("Buffon");
+            if (buffonObj) Destroy(buffonObj);
         }
     }
 
@@ -43,40 +48,60 @@ public class CombatRoom : MonoBehaviour
     {
         inCombat = true;
 
-        // Activar muros overlapeados, bloquear puertas temporalmente
+        // Bloquear puertas temporalmente
         for (int i = 0; i < room.doors.Length; i++)
         {
             room.doors[i].SetActive(false);
             room.walls[i].SetActive(true);
         }
 
-        // Spawnear enemigos
-        int count = Random.Range(minEnemies, maxEnemies + 1);
-        for (int i = 0; i < count; i++)
+        // Spawnear enemigos o Boss
+        if (isBossRoom && bossPrefab != null && bossSpawnPoint != null)
         {
-            Vector3 pos = spawnPoints[Random.Range(0, spawnPoints.Length)].position;
-
-            GameObject enemy = Instantiate(enemyPrefabs[Random.Range(0, enemyPrefabs.Length)], pos, Quaternion.identity, transform);
-            spawnedEnemies.Add(enemy);
+            // Sala con Boss
+            GameObject boss = Instantiate(bossPrefab, bossSpawnPoint.position, bossSpawnPoint.rotation, transform);
+            spawnedEnemies.Add(boss);
+        }
+        else
+        {
+            // Sala normal con enemigos
+            int count = Random.Range(minEnemies, maxEnemies + 1);
+            for (int i = 0; i < count; i++)
+            {
+                Vector3 pos = spawnPoints[Random.Range(0, spawnPoints.Length)].position;
+                GameObject enemy = Instantiate(enemyPrefabs[Random.Range(0, enemyPrefabs.Length)], pos, Quaternion.identity, transform);
+                spawnedEnemies.Add(enemy);
+            }
         }
 
+        // Pequeña espera para que se instancien
         yield return new WaitForSeconds(0.5f);
 
+        // Activar la acción de todos los enemigos
         foreach (var enemy in spawnedEnemies)
         {
-            if (enemy != null) enemy.GetComponent<Enemy>().canAct = true;
+            if (enemy != null && enemy.TryGetComponent<Enemy>(out var e))
+            {
+                e.canAct = true;
+            }
         }
 
         // Esperar a que todos mueran
         while (spawnedEnemies.Exists(e => e != null))
+        {
             yield return null;
+        }
 
         cleared = true;
         inCombat = false;
 
-        // Restaurar todo el estado original de la sala (doors + walls)
+        // Restaurar estado original de la sala
         room.RestoreRoom();
 
-        Instantiate(buffon, buffonSpawn.position, buffonSpawn.rotation);
+        // Instanciar buffon
+        if (buffon != null && buffonSpawn != null)
+        {
+            Instantiate(buffon, buffonSpawn.position, buffonSpawn.rotation);
+        }
     }
 }

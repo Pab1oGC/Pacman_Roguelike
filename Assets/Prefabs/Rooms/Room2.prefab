@@ -385,5 +385,8 @@ MonoBehaviour:
   - {fileID: 294004905046644218}
   - {fileID: 679297029630654806}
   - {fileID: 1072002193500616998}
+  bossPrefab: {fileID: 0}
+  bossSpawnPoint: {fileID: 0}
+  isBossRoom: 0
   buffon: {fileID: 1462481903318128389, guid: 7a531636daf27a2498cbecfdaa872811, type: 3}
   buffonSpawn: {fileID: 223008305888916569}
