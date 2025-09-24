@@ -174,4 +174,13 @@ public class DungeonGenerator : MonoBehaviour
 
         return neighbors;
     }
+
+    public void Run(Vector2Int gridSize, Vector2 tileOffset, int seed)
+    {
+        // Fija la secuencia aleatoria para que todos generen lo mismo
+        UnityEngine.Random.InitState(seed);
+        Run(gridSize, tileOffset);
+        // (opcional) restaurar si te preocupa afectar otros Random:
+        // UnityEngine.Random.InitState(System.Environment.TickCount);
+    }
 }

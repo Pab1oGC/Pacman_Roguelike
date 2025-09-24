@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class StartRoom : MonoBehaviour
 {
-    [SerializeField] Transform spawnPlayer;
-    [SerializeField] GameObject player;
-    // Start is called before the first frame update
-    void Start()
-    {
-        Instantiate(player, spawnPlayer.position, Quaternion.Euler(0,0,0));
-    }
+    [SerializeField] private Transform spawnPlayer;
+    public static StartRoom Instance { get; private set; }
+    public Transform SpawnPoint => spawnPlayer;
 
-    // Update is called once per frame
-    void Update()
+    void Awake()
     {
-        
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
     }
 }

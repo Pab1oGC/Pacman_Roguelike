@@ -1,9 +1,10 @@
-﻿using System.Collections;
+﻿using Mirror;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 
-public class Movement : MonoBehaviour
+public class Movement : NetworkBehaviour
 {
     [Header("Referencias")]
     [SerializeField] private DPadInputSource dpadOverride;
@@ -91,6 +92,7 @@ public class Movement : MonoBehaviour
 
     private void Update()
     {
+        if (!isLocalPlayer) return;
         _input = _inputSource?.GetMoveInput() ?? Vector2.zero;
 
         // Si el flag cambia en runtime, refresca la política sin allocs
@@ -100,6 +102,7 @@ public class Movement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!isLocalPlayer) return;
 
         if (_movementLocked)
         {
