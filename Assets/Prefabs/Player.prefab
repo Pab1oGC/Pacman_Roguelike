@@ -152,9 +152,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce40dce4a02d57141b004f2aeb2a6dd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+<<<<<<< Updated upstream
   maxHealth: 6
   startArmor: 0
   invulnerability: {fileID: 0}
+=======
+  maxHealth: 15
+  currentHealth: 0
+--- !u!114 &1185843376530180349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4217805844949086149}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb0a94ca40a25964db1e6ab356d4b4ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  coins: 0
+>>>>>>> Stashed changes
 --- !u!54 &8893750846947936627
 Rigidbody:
   m_ObjectHideFlags: 0

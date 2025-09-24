@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9129582290969419151}
   - component: {fileID: 9129582290969419156}
+<<<<<<< Updated upstream
   - component: {fileID: 9129582290969419155}
   - component: {fileID: 9129582290969419154}
   - component: {fileID: 9129582290969419153}
@@ -18,6 +19,14 @@ GameObject:
   m_Layer: 0
   m_Name: Boss
   m_TagString: Untagged
+=======
+  - component: {fileID: 9129582290969419157}
+  - component: {fileID: 7052519765234048982}
+  - component: {fileID: 7490791222037794568}
+  m_Layer: 0
+  m_Name: Boss
+  m_TagString: Enemy
+>>>>>>> Stashed changes
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -30,8 +39,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9129582290969419150}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+<<<<<<< Updated upstream
   m_LocalPosition: {x: -0.0031104088, y: -16.603, z: 0.37673658}
   m_LocalScale: {x: 1, y: 1, z: 1}
+=======
+  m_LocalPosition: {x: 0, y: 0, z: -1.686}
+  m_LocalScale: {x: 4, y: 4, z: 4}
+>>>>>>> Stashed changes
   m_Children:
   - {fileID: 8734858763767525550}
   m_Father: {fileID: 0}
@@ -51,6 +65,7 @@ CapsuleCollider:
   m_Height: 1.530489
   m_Direction: 1
   m_Center: {x: 0, y: 0.55813503, z: 0}
+<<<<<<< Updated upstream
 --- !u!114 &9129582290969419155
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -112,6 +127,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   detectionRange: 5
   turnSpeed: 540
+=======
+>>>>>>> Stashed changes
 --- !u!195 &9129582290969419157
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -119,7 +136,11 @@ NavMeshAgent:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9129582290969419150}
+<<<<<<< Updated upstream
   m_Enabled: 1
+=======
+  m_Enabled: 0
+>>>>>>> Stashed changes
   m_AgentTypeID: 0
   m_Radius: 0.5
   m_Speed: 3.5
@@ -134,6 +155,67 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+<<<<<<< Updated upstream
+=======
+--- !u!114 &7052519765234048982
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9129582290969419150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa64cd81c212e1249a53f61ea3842567, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 5
+  canAct: 0
+  dealContactDamage: 1
+  contactDamage: 2
+  contactCooldown: 0.5
+  selfDestructOnHit: 0
+  playerTag: Player
+  doKnockback: 1
+  knockbackForce: 2
+  knockbackUpForce: 2
+  movementLock: 0.15
+  deathVfxPrefab: {fileID: 0}
+  deathVfxLifetime: 2
+  dropChance: 0.5
+  coinPrefab: {fileID: 0}
+  coinAmountRange: {x: 1, y: 3}
+  scatterRadius: 0.5
+  scatterImpulse: 2
+  destroyDelay: 0.1
+  coinSpawnForward: 0.6
+  coinSpawnUp: 0.1
+  coinScatter: 0.25
+  moveSpeed: 2
+  attackRange: 2.5
+  attackCooldown: 2
+--- !u!95 &7490791222037794568
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9129582290969419150}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: 5951452123e7c284d96ae35de870fcd6, type: 3}
+  m_Controller: {fileID: 9100000, guid: 44ef7a44a41ff554f8edcea8f8ec8a28, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+>>>>>>> Stashed changes
 --- !u!1001 &9129582291879679813
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -202,21 +284,32 @@ PrefabInstance:
       value: boss@Mutant Idle
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: 5951452123e7c284d96ae35de870fcd6, type: 3}
+<<<<<<< Updated upstream
+=======
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: 5951452123e7c284d96ae35de870fcd6, type: 3}
+>>>>>>> Stashed changes
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 44ef7a44a41ff554f8edcea8f8ec8a28, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5951452123e7c284d96ae35de870fcd6, type: 3}
+<<<<<<< Updated upstream
 --- !u!1 &8247115012588595732 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 5951452123e7c284d96ae35de870fcd6, type: 3}
   m_PrefabInstance: {fileID: 9129582291879679813}
   m_PrefabAsset: {fileID: 0}
+=======
+>>>>>>> Stashed changes
 --- !u!4 &8734858763767525550 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 5951452123e7c284d96ae35de870fcd6, type: 3}
   m_PrefabInstance: {fileID: 9129582291879679813}
   m_PrefabAsset: {fileID: 0}
+<<<<<<< Updated upstream
 --- !u!114 &9129582291361202262
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -229,3 +322,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 363612e5e95902147aba1ae3547a6299, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+=======
+>>>>>>> Stashed changes
