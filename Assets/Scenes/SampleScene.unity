@@ -2009,6 +2009,7 @@ MonoBehaviour:
   - {fileID: 3987253785040186052, guid: bc38ae8665656cb4f8e12eb4b443c293, type: 3}
   - {fileID: 1462481903318128389, guid: 7a531636daf27a2498cbecfdaa872811, type: 3}
   - {fileID: 4560948008629810073, guid: c59b4f4811b640e4aa3338fec8a0e2f8, type: 3}
+  - {fileID: 9129582290969419150, guid: e7455a7f51a57194585c37fb743a84a1, type: 3}
   exceptionsDisconnect: 1
   snapshotSettings:
     bufferTimeMultiplier: 2
@@ -2058,7 +2059,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   dungeonPrefab: {fileID: 7903327824585198908, guid: 1fd47e0a504d12640974724d2106cc7d, type: 3}
-  gridSize: {x: 4, y: 3}
+  gridSize: {x: 3, y: 3}
   tileSize: {x: 0.352, y: 0.213}
   fixedSpawn: {fileID: 1738944257}
   playerSpawnLocal: {x: 0, y: 0, z: 0.5}

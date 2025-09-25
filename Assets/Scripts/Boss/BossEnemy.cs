@@ -1,3 +1,4 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,75 +6,154 @@ using UnityEngine;
 public class BossEnemy : Enemy
 {
     [Header("Boss Settings")]
-    public float moveSpeed = 2f;
-    public float attackRange = 0.1f;
-    public float attackCooldown = 3f;
-    private float lastAttackTime = 0f;
+    [SerializeField] private float moveSpeed = 2f;
+    [SerializeField] private float attackRange = 1.6f;     // rango de golpe
+    [SerializeField] private float attackCooldown = 3f;
+    [SerializeField] private float meleeDamage = 1f;       // daño por golpe
 
-    private Transform player;
-    private Animator animator;
+    [Header("Animator Params")]
+    [SerializeField] private string runBool = "Run";
+    [SerializeField] private string attackTrigger = "Attack";
+    [SerializeField] private string dieTrigger = "Die";
 
-    protected override void Start()
+    // (opcional) si le pones NetworkHealth al propio boss, lo usamos para morir bonito
+    [Header("Vida (opcional)")]
+    [SerializeField] private Health bossHealth;
+    [SerializeField] private float destroyAfterDeathSeconds = 5f;
+
+    Animator _anim;
+    NetworkAnimator _netAnim;
+    float _lastAttackTime;
+
+    void Awake()
     {
-        base.Start();
-        player = GameObject.FindGameObjectWithTag("Player")?.transform;
-        animator = GetComponent<Animator>();
-        canAct = false; // se activará desde CombatRoom
+        _anim = GetComponent<Animator>();
+        _netAnim = GetComponent<NetworkAnimator>();
+        if (!bossHealth) bossHealth = GetComponent<Health>();
     }
 
+    public override void OnStartServer()
+    {
+        base.OnStartServer();
+        // El CombatRoom te pondrá canAct=true cuando toque
+        if (bossHealth != null)
+        {
+            // Si tienes vida en el boss, escucha su muerte para animar y destruir
+            bossHealth.OnDied += OnBossDied_ServerCallback;
+        }
+    }
+
+    public override void OnStopServer()
+    {
+        base.OnStopServer();
+        if (bossHealth != null)
+            bossHealth.OnDied -= OnBossDied_ServerCallback;
+    }
+
+    // === IA SOLO EN SERVIDOR ===
+    [ServerCallback]
     void Update()
     {
-        if (!canAct || player == null || isDead) return;
+        if (!isServer || !canAct) return;
 
-        Vector3 direction = player.position - transform.position;
-        float distance = direction.magnitude;
-
-        // Girar hacia el jugador (solo eje Y)
-        Vector3 lookDir = new Vector3(direction.x, 0, direction.z).normalized;
-        if (lookDir.sqrMagnitude > 0.01f)
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDir), Time.deltaTime * 5f);
-
-        // Movimiento
-        if (distance > attackRange)
+        // 1) Objetivo: jugador más cercano
+        var target = GetClosestPlayerServer();
+        if (!target)
         {
-            transform.position = Vector3.MoveTowards(transform.position, player.position, moveSpeed * Time.deltaTime);
-            if (animator) animator.SetBool("Run", true);
+            // nadie cerca -> idle
+            SetRun(false);
+            return;
+        }
+
+        // 2) Girar hacia el jugador (solo Y)
+        Vector3 to = target.position - transform.position;
+        to.y = 0f;
+        float dist = to.magnitude;
+        if (to.sqrMagnitude > 1e-6f)
+        {
+            var look = Quaternion.LookRotation(to, Vector3.up);
+            transform.rotation = Quaternion.Slerp(transform.rotation, look, Time.deltaTime * 5f);
+        }
+
+        // 3) Mover o atacar
+        if (dist > attackRange)
+        {
+            // caminar hacia el target
+            transform.position = Vector3.MoveTowards(transform.position, target.position, moveSpeed * Time.deltaTime);
+            SetRun(true);
         }
         else
         {
-            if (animator) animator.SetBool("Run", false);
+            SetRun(false);
 
-            // Ataque cuerpo a cuerpo
-            if (Time.time - lastAttackTime >= attackCooldown)
+            if (Time.time - _lastAttackTime >= attackCooldown)
             {
-                Attack();
-                lastAttackTime = Time.time;
+                _lastAttackTime = Time.time;
+                // Disparamos el trigger EN EL SERVER; NetworkAnimator lo replica a todos
+                if (_netAnim) _netAnim.SetTrigger(attackTrigger);
+                else if (_anim) _anim.SetTrigger(attackTrigger);
             }
         }
     }
 
-    private void Attack()
+    // === Animation Event ===
+    // Pon un evento en el clip de ataque que llame EXACTAMENTE a "AnimEvent_DealHit".
+    // Este método sólo hace daño en el SERVIDOR.
+    public void AnimEvent_DealHit()
     {
-        if (animator) animator.SetTrigger("Attack");
+        if (!isServer || meleeDamage <= 0f) return;
 
-        if (player.TryGetComponent<Health>(out var hp))
+        // Golpea a cualquier Player dentro del rango (puedes afinar con un ángulo, etc.)
+        // Aquí usamos un OverlapSphere sencillo alrededor del boss.
+        const float hitRadius = 1.8f; // un poquito más que attackRange para tolerancia
+        var hits = Physics.OverlapSphere(transform.position, hitRadius, ~0, QueryTriggerInteraction.Ignore);
+        foreach (var h in hits)
         {
-            hp.ApplyDamage(1f); // daño ejemplo
+            if (!h.CompareTag("Player")) continue;
+
+            // Aplicar daño al jugador golpeado
+            if (h.TryGetComponent<Health>(out var hp))
+            {
+                hp.ApplyDamageServer(meleeDamage);
+            }
         }
     }
 
-    protected override void Die()
+    // === Muerte del Boss (si usas NetworkHealth en el boss) ===
+    [Server]
+    void OnBossDied_ServerCallback()
     {
-        if (isDead) return;
-        isDead = true;
-        canAct = false;
+        canAct = false; // ya no actúa
 
-        if (animator) animator.SetTrigger("Die");
+        // Trigger de muerte replicado
+        if (_netAnim) _netAnim.SetTrigger(dieTrigger);
+        else if (_anim) _anim.SetTrigger(dieTrigger);
 
-        // Terminar juego
-        //if (GameManager.Instance != null)
-        //    GameManager.Instance.GameOver();
-
-        Destroy(gameObject, 5f); // tiempo para animación de muerte
+        // Destruye el boss tras la animación
+        Invoke(nameof(ServerDestroySelf), Mathf.Max(0.1f, destroyAfterDeathSeconds));
     }
+
+    [Server]
+    void ServerDestroySelf()
+    {
+        // Usa la utilidad del Enemy base si quieres VFX/loot; si no, destruye directo
+        // DieServer(); // <- si tu Enemy.base ya hace VFX/loot
+        NetworkServer.Destroy(gameObject);
+    }
+
+    // ===== utilidades Animator =====
+    void SetRun(bool on)
+    {
+        // Cambia el bool en el server; NetworkAnimator replica el cambio a todos
+        if (_anim) _anim.SetBool(runBool, on);
+    }
+
+#if UNITY_EDITOR
+    // Gizmo para ver el rango de ataque
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = new Color(1f, 0.3f, 0f, 0.25f);
+        Gizmos.DrawSphere(transform.position, attackRange);
+    }
+#endif
 }

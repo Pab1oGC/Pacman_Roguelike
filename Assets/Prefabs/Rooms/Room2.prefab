@@ -383,7 +383,7 @@ MonoBehaviour:
   - {fileID: 716134623845905519, guid: 90474af9b8de2964aacf4ca7c527d164, type: 3}
   - {fileID: 2759865286966782039, guid: 05f966b00eba7944fbb0d59bb4bd42f3, type: 3}
   minEnemies: 1
-  maxEnemies: 4
+  maxEnemies: 2
   spawnPoints:
   - {fileID: 53633886171545062}
   - {fileID: 9069848075142995847}
@@ -393,7 +393,8 @@ MonoBehaviour:
   - {fileID: 679297029630654806}
   - {fileID: 1072002193500616998}
   room: {fileID: 0}
+  minPlayersToStart: 1
+  joinWindowSeconds: 5
+  startImmediatelyOnMinReached: 1
   buffon: {fileID: 1462481903318128389, guid: 7a531636daf27a2498cbecfdaa872811, type: 3}
   buffonSpawn: {fileID: 223008305888916569}
-  joinWindowSeconds: 5
-  minPlayersToStart: 1

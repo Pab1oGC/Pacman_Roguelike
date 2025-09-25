@@ -10,7 +10,7 @@ public class MenuController : MonoBehaviour
     [SerializeField] private float fadeSpeed = 1.6f;
 
     [Header("Scenes")]
-    [SerializeField] private string arSceneName = "ARGame";
+    [SerializeField] private string arSceneName = "SampleScene";
     [SerializeField] private string multiplayerSceneName = "Multiplayer";
 
     [Header("SFX (opcional)")]

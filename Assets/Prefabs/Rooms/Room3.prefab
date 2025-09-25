@@ -11,6 +11,10 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: c59718c73442663468ce5c88422d28a9, type: 2}
+    - target: {fileID: 3913722320689152721, guid: 5d742cbaa12407146bd3454131628b6e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 10.48
+      objectReference: {fileID: 0}
     - target: {fileID: 5300875711731791633, guid: 5d742cbaa12407146bd3454131628b6e, type: 3}
       propertyPath: _assetId
       value: 2082330644
@@ -71,6 +75,11 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7973538313113357229, guid: 5d742cbaa12407146bd3454131628b6e, type: 3}
   m_PrefabInstance: {fileID: 2961330088641034439}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &2254218402617768470 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3913722320689152721, guid: 5d742cbaa12407146bd3454131628b6e, type: 3}
+  m_PrefabInstance: {fileID: 2961330088641034439}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &3291379974489419018
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -87,12 +96,14 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   enemyPrefabs:
-  - {fileID: 0}
+  - {fileID: 9129582290969419150, guid: e7455a7f51a57194585c37fb743a84a1, type: 3}
   minEnemies: 1
   maxEnemies: 1
-  spawnPoints: []
+  spawnPoints:
+  - {fileID: 2254218402617768470}
   room: {fileID: 0}
+  minPlayersToStart: 1
+  joinWindowSeconds: 5
+  startImmediatelyOnMinReached: 1
   buffon: {fileID: 0}
   buffonSpawn: {fileID: 0}
-  joinWindowSeconds: 5
-  minPlayersToStart: 1

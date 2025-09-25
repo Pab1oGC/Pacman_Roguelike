@@ -43,17 +43,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 970c81043f861254fbd3bbdff50a7228, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  size: {x: 5, y: 5}
+  size: {x: 3, y: 3}
   offset: {x: 10, y: 6}
   startPos: 0
   rooms:
   - room: {fileID: 7983540835322614825, guid: 6407171e2108bef46ae7ca710067cb20, type: 3}
     minPosition: {x: 0, y: 0}
-    maxPosition: {x: 4, y: 4}
+    maxPosition: {x: 2, y: 2}
     obligatory: 0
   - room: {fileID: 5169975001264763754, guid: 4aa6b283d8bb6a74da26ee854a622ce3, type: 3}
-    minPosition: {x: 4, y: 4}
-    maxPosition: {x: 4, y: 4}
+    minPosition: {x: 2, y: 2}
+    maxPosition: {x: 2, y: 2}
     obligatory: 1
   spawnRoomPrefab: {fileID: 7973538313113357229, guid: 5d742cbaa12407146bd3454131628b6e, type: 3}
   autoGenerate: 0

@@ -36,7 +36,7 @@ public class BossAttack
         float distance = Vector3.Distance(animator.transform.position, player.position);
         if (distance <= attackRange && player.TryGetComponent<Health>(out var hp))
         {
-            hp.ApplyDamage(damage);
+            hp.ApplyDamageServer(damage);
         }
     }
 }

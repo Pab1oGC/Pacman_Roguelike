@@ -222,8 +222,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce40dce4a02d57141b004f2aeb2a6dd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 9
-  currentHealth: 0
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  maxHealth: 5
 --- !u!114 &1185843376530180349
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -236,7 +238,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb0a94ca40a25964db1e6ab356d4b4ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coins: 0
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  startCoins: 0
 --- !u!54 &8893750846947936627
 Rigidbody:
   m_ObjectHideFlags: 0

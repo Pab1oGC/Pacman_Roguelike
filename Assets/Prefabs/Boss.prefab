@@ -13,6 +13,9 @@ GameObject:
   - component: {fileID: 9129582290969419157}
   - component: {fileID: 7868143288554192450}
   - component: {fileID: 767056972636226660}
+  - component: {fileID: 6157525905502300758}
+  - component: {fileID: 1087009346881287035}
+  - component: {fileID: 3107303047308524853}
   m_Layer: 0
   m_Name: Boss
   m_TagString: Enemy
@@ -29,7 +32,7 @@ Transform:
   m_GameObject: {fileID: 9129582290969419150}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -1.686}
-  m_LocalScale: {x: 4, y: 4, z: 4}
+  m_LocalScale: {x: 0.06, y: 0.06, z: 0.06}
   m_Children:
   - {fileID: 8734858763767525550}
   m_Father: {fileID: 0}
@@ -104,6 +107,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba13223bd397921409b07bb70c8b98ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   health: 6
   canAct: 0
   dealContactDamage: 1
@@ -115,20 +121,92 @@ MonoBehaviour:
   knockbackForce: 1
   knockbackUpForce: 1
   movementLock: 0.15
-  deathVfxPrefab: {fileID: 0}
+  deathVfxPrefab: {fileID: 3548588485384254792, guid: 2f9e7dc163581394da1e00b561eed65d, type: 3}
   deathVfxLifetime: 2
   dropChance: 0.5
-  coinPrefab: {fileID: 0}
+  coinPrefab: {fileID: 4560948008629810073, guid: c59b4f4811b640e4aa3338fec8a0e2f8, type: 3}
   coinAmountRange: {x: 1, y: 3}
-  scatterRadius: 0.5
-  scatterImpulse: 2
-  destroyDelay: 0.1
+  coinScatter: 0.25
   coinSpawnForward: 0.6
   coinSpawnUp: 0.1
-  coinScatter: 0.25
+  destroyDelay: 0.1
   moveSpeed: 2
   attackRange: 0.1
   attackCooldown: 3
+  meleeDamage: 1
+  runBool: Run
+  attackTrigger: Attack
+  dieTrigger: Die
+  bossHealth: {fileID: 0}
+  destroyAfterDeathSeconds: 5
+--- !u!114 &6157525905502300758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9129582290969419150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  _assetId: 2178952010
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
+--- !u!114 &1087009346881287035
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9129582290969419150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ff3ba0becae47b8b9381191598957c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  target: {fileID: 9129582290969419151}
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 0
+  onlySyncOnChange: 1
+  compressRotation: 1
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 1
+  coordinateSpace: 0
+  timelineOffset: 1
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  onlySyncOnChangeCorrectionMultiplier: 2
+  useFixedUpdate: 0
+  rotationSensitivity: 0.01
+  positionPrecision: 0.01
+  scalePrecision: 0.01
+--- !u!114 &3107303047308524853
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9129582290969419150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f6f3bf89aa97405989c802ba270f815, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 1
+  syncMode: 0
+  syncInterval: 0
+  clientAuthority: 0
+  animator: {fileID: 7868143288554192450}
 --- !u!1001 &9129582291879679813
 PrefabInstance:
   m_ObjectHideFlags: 0
