@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 848409ee8ba454f42a5ddff137688a27, type: 3}
+  m_Name: ReferenceImageLibrary
+  m_EditorClassIdentifier: 
+  m_GuidLow: 5760072785572772725
+  m_GuidHigh: 6946467454298271106
+  m_Images:
+  - m_SerializedGuid:
+      m_GuidLow: 5545001651521883503
+      m_GuidHigh: 4554063692444144051
+    m_SerializedTextureGuid:
+      m_GuidLow: 7184403339549882101
+      m_GuidHigh: 10712549711339051818
+    m_Size: {x: 0.26, y: 0.16184999}
+    m_SpecifySize: 1
+    m_Name: demon-slayer-castillo-infinito-estrenan
+    m_Texture: {fileID: 0}
