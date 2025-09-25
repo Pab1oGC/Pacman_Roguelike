@@ -1,3 +1,4 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,51 +6,50 @@ using UnityEngine.UI;
 
 public class CoinUI : MonoBehaviour
 {
-    [Header("Referencias")]
-    [SerializeField] private PlayerWallet playerWallet; 
-    [SerializeField] private Text label;                
+    [Header("Referencias (opcional)")]
+    [SerializeField] private PlayerWallet playerWallet;  // si lo dejas vacío, se auto-bindea al localPlayer
+    [SerializeField] private Text label;
 
     [Header("Formato")]
-    [SerializeField] private string format = "{0}"; // usa "{0}" si quieres solo el número
+    [SerializeField] private string format = "{0}";
 
-    private void Awake()
+    void Awake()
     {
         if (!label) label = GetComponent<Text>();
     }
 
-    private void OnEnable()
+    void OnEnable()
     {
+        // Si ya está asignado, hook directo
         if (playerWallet != null) Hook(playerWallet);
-        else StartCoroutine(WaitAndBindByTag());
+        else StartCoroutine(BindToLocalPlayerWallet());
     }
 
-    private void OnDisable()
+    void OnDisable()
     {
         if (playerWallet != null)
             playerWallet.OnCoinsChanged -= UpdateLabel;
     }
 
-    private IEnumerator WaitAndBindByTag()
+    IEnumerator BindToLocalPlayerWallet()
     {
-        // espera a que el Player (instancia) exista en escena
-        while (playerWallet == null)
+        // Espera a que exista el localPlayer de este cliente
+        while (NetworkClient.localPlayer == null)
+            yield return null;
+
+        var lp = NetworkClient.localPlayer;                 // NetworkIdentity del jugador local
+        var wallet = lp.GetComponentInChildren<PlayerWallet>(true);
+        while (wallet == null)
         {
-            var go = GameObject.FindGameObjectWithTag("Player");
-            if (go != null)
-            {
-                // busca Wallet en root o en hijos (por si tu RB/Animator está abajo)
-                var wallet = go.GetComponentInChildren<PlayerWallet>();
-                if (wallet != null)
-                {
-                    Hook(wallet);
-                    break;
-                }
-            }
-            yield return null; // siguiente frame
+            // si el componente aparece tarde (instanciado por code), seguimos esperando
+            yield return null;
+            wallet = lp.GetComponentInChildren<PlayerWallet>(true);
         }
+
+        Hook(wallet);
     }
 
-    private void Hook(PlayerWallet wallet)
+    void Hook(PlayerWallet wallet)
     {
         if (playerWallet != null)
             playerWallet.OnCoinsChanged -= UpdateLabel;
@@ -57,11 +57,11 @@ public class CoinUI : MonoBehaviour
         playerWallet = wallet;
         playerWallet.OnCoinsChanged += UpdateLabel;
 
-        // sincroniza valor inicial
+        // Estado inicial
         UpdateLabel(playerWallet.Coins);
     }
 
-    private void UpdateLabel(int coins)
+    void UpdateLabel(int coins)
     {
         if (label) label.text = string.Format(format, coins);
     }

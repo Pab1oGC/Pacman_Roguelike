@@ -262,9 +262,13 @@ PrefabInstance:
       propertyPath: m_Constraints
       value: 126
       objectReference: {fileID: 0}
+    - target: {fileID: 5300875711731791633, guid: 5d742cbaa12407146bd3454131628b6e, type: 3}
+      propertyPath: _assetId
+      value: 2400168394
+      objectReference: {fileID: 0}
     - target: {fileID: 6031177296997235482, guid: 5d742cbaa12407146bd3454131628b6e, type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7286188083591477313, guid: 5d742cbaa12407146bd3454131628b6e, type: 3}
       propertyPath: m_Size.x
@@ -371,6 +375,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12ea01fc6c065ef4d9ca73bda4dbe1f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   enemyPrefabs:
   - {fileID: 3987253785040186052, guid: bc38ae8665656cb4f8e12eb4b443c293, type: 3}
   - {fileID: 716134623845905519, guid: 90474af9b8de2964aacf4ca7c527d164, type: 3}
@@ -385,5 +392,8 @@ MonoBehaviour:
   - {fileID: 294004905046644218}
   - {fileID: 679297029630654806}
   - {fileID: 1072002193500616998}
+  room: {fileID: 0}
   buffon: {fileID: 1462481903318128389, guid: 7a531636daf27a2498cbecfdaa872811, type: 3}
   buffonSpawn: {fileID: 223008305888916569}
+  joinWindowSeconds: 5
+  minPlayersToStart: 1

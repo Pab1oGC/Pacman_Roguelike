@@ -25,7 +25,7 @@ public class CoinPickup : MonoBehaviour
 
         if (other.TryGetComponent<PlayerWallet>(out var wallet))
         {
-            wallet.Add(value);
+            wallet.AddCoinsServer(value);
 
             if (pickupVfx)
             {

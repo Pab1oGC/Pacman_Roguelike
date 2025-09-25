@@ -1,3 +1,4 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,25 +6,38 @@ using UnityEngine;
 public class KamikazeEnemy : Enemy
 {
     public float speed = 3f;
-    private Transform player;
+    private Transform target;
 
-    protected override void Start()
+    public override void OnStartServer()
     {
-        base.Start();
-        player = GameObject.FindGameObjectWithTag("Player").transform;
+        base.OnStartServer();
+        target = FindNearestPlayer();
     }
 
-    void Update()
+    [ServerCallback]
+    private void Update()
     {
-        if (player == null) return;
+        if (!canAct || isDead || target == null) return;
 
-        if(!canAct) return;
+        // perseguir
+        transform.position = Vector3.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
 
-        transform.position = Vector3.MoveTowards(transform.position, player.position, speed * Time.deltaTime);
-
-        Vector3 dir = (player.position - transform.position).normalized;
-        transform.forward = dir;
+        Vector3 dir = (target.position - transform.position);
+        dir.y = 0f;
+        if (dir.sqrMagnitude > 1e-6f) transform.forward = dir.normalized;
     }
 
-
+    // Util
+    private Transform FindNearestPlayer()
+    {
+        float best = float.MaxValue; Transform bestT = null;
+        foreach (var kv in NetworkServer.connections)
+        {
+            var id = kv.Value?.identity;
+            if (!id) continue;
+            float d = (id.transform.position - transform.position).sqrMagnitude;
+            if (d < best) { best = d; bestT = id.transform; }
+        }
+        return bestT;
+    }
 }

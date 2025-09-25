@@ -1,71 +1,91 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class ShooterEnemy : Enemy
 {
-    public GameObject bulletPrefab;
+    public GameObject bulletPrefab;      // prefab con NetworkIdentity
     public Transform firePoint;
     public float fireRate = 1f;
     private float fireCooldown = 0f;
 
-    public float moveRadius = 2f;
-    public float moveSpeed = 1.5f;
-    private Vector3 targetPos;
     public float minDistance = 3f;
+    public float moveSpeed = 1.5f;
+    public float rotationSpeed = 2f;
 
-    private Transform player;
-    public Rigidbody rb;
+    private Transform target;
 
-    private float rotationSpeed = 2f;
+    Animator _anim;
+    NetworkAnimator _netAnim;
+    float _cd;
 
-    protected override void Start()
+    void Awake()
     {
-        base.Start();
-        player = GameObject.FindGameObjectWithTag("Player").transform;
-        rb.constraints = RigidbodyConstraints.FreezeRotation;
-        PickNewTarget();
+        _anim = GetComponent<Animator>();
+        _netAnim = GetComponent<NetworkAnimator>();
     }
 
+    public override void OnStartServer()
+    {
+        base.OnStartServer();
+        target = FindNearestPlayer();
+    }
+
+    [ServerCallback]
     void Update()
     {
-        if (player == null) return;
+        if (!isServer || !canAct) return;
 
-        if(!canAct) return;
-
-        Vector3 direction = player.position - transform.position;
-        float distance = direction.magnitude;
-
-        // Girar hacia el jugador (solo eje Y)
-        Vector3 lookDirection = new Vector3(direction.x, 0, direction.z);
-        if (lookDirection != Vector3.zero)
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDirection), Time.deltaTime * rotationSpeed);
-
-        // Mantener distancia mínima
-        if (distance > minDistance)
+        // 1) Buscar/encarar al jugador más cercano
+        var target = GetClosestPlayerServer();
+        if (target)
         {
-            Vector3 targetPos = player.position - direction.normalized * minDistance;
-            transform.position = Vector3.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime);
+            Vector3 dir = target.position - transform.position; dir.y = 0f;
+            if (dir.sqrMagnitude > 1e-6f)
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * 4f);
+
+            float dist = dir.magnitude;
+            if (dist > minDistance)
+                transform.position += dir.normalized * moveSpeed * Time.deltaTime;
         }
 
-
-        // Disparar
-        /*fireCooldown -= Time.deltaTime;
-        if (fireCooldown <= 0f)
+        // 2) Reloj de disparo y lanzar animación
+        _cd -= Time.deltaTime;
+        if (_cd <= 0f)
         {
-            Shoot();
-            fireCooldown = 1f / fireRate;
-        }*/
+            _cd = 1f / Mathf.Max(0.01f, fireRate);
+
+            // Dispara el trigger EN EL SERVIDOR. NetworkAnimator lo replica a todos.
+            /*if (_netAnim) _netAnim.SetTrigger(shootTrigger);
+            else if (_anim) _anim.SetTrigger(shootTrigger);*/
+        }
     }
 
-    public void Shoot()
+    public void AnimEvent_Shoot()
     {
-        Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+        if (!isServer) return;                    // seguridad: sólo server crea la bala
+        if (!bulletPrefab || !firePoint) return;
+
+        var go = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+
+        // Si tu Bullet tiene flags (ej. para diferenciar daño al jugador):
+        var b = go.GetComponent<Bullet>();
+        if (b) b.isBulletPlayer = false;          // bala enemiga
+
+        NetworkServer.Spawn(go);                  // replica a todos los clientes
     }
 
-    void PickNewTarget()
+    private Transform FindNearestPlayer()
     {
-        Vector2 rand = Random.insideUnitCircle * moveRadius;
-        targetPos = new Vector3(transform.position.x + rand.x, transform.position.y, transform.position.z + rand.y);
+        float best = float.MaxValue; Transform bestT = null;
+        foreach (var kv in NetworkServer.connections)
+        {
+            var id = kv.Value?.identity;
+            if (!id) continue;
+            float d = (id.transform.position - transform.position).sqrMagnitude;
+            if (d < best) { best = d; bestT = id.transform; }
+        }
+        return bestT;
     }
 }

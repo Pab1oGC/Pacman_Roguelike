@@ -1,69 +1,77 @@
-﻿using System.Collections;
+﻿using Mirror;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class HeartsUI : MonoBehaviour
 {
-    [SerializeField] private Health playerHealth;
+    [Header("Refs (opcional)")]
+    [SerializeField] private Health playerHealth;  // si lo dejas vacío, se auto-bindea al localPlayer
     [SerializeField] private GameObject heartPrefab;
     [SerializeField] private Transform heartsContainer;
 
     private readonly List<GameObject> hearts = new List<GameObject>();
 
-    private void OnEnable()
+    void OnEnable()
     {
-        // Si ya está asignado, nos suscribimos; si no, esperamos a que spawnee
         if (playerHealth != null) Hook(playerHealth);
-        else StartCoroutine(WaitAndBindByTag());
+        else StartCoroutine(BindToLocalPlayerHealth());
     }
 
-    private void OnDisable()
+    void OnDisable()
     {
         if (playerHealth != null)
-            playerHealth.OnHealthChanged -= UpdateHearts;
+            playerHealth.OnHealthChanged -= OnHealthChanged;
     }
 
-    private IEnumerator WaitAndBindByTag()
+    IEnumerator BindToLocalPlayerHealth()
     {
-        while (playerHealth == null)
+        while (NetworkClient.localPlayer == null)
+            yield return null;
+
+        var lp = NetworkClient.localPlayer;
+        var hp = lp.GetComponentInChildren<Health>(true);
+        while (hp == null)
         {
-            var go = GameObject.FindGameObjectWithTag("Player");
-            if (go != null)
-            {
-                var hp = go.GetComponent<Health>();
-                if (hp != null) Hook(hp);
-                break;
-            }
-            yield return null; // espera al siguiente frame
+            yield return null;
+            hp = lp.GetComponentInChildren<Health>(true);
         }
+
+        Hook(hp);
     }
 
-    private void Hook(Health hp)
+    void Hook(Health hp)
     {
         if (playerHealth != null)
-            playerHealth.OnHealthChanged -= UpdateHearts;
+            playerHealth.OnHealthChanged -= OnHealthChanged;
 
         playerHealth = hp;
-        playerHealth.OnHealthChanged += UpdateHearts;
+        playerHealth.OnHealthChanged += OnHealthChanged;
 
-        GenerateHearts(playerHealth.maxHealth);
-        UpdateHearts(playerHealth.currentHealth, playerHealth.maxHealth);
+        // Genera corazones y sincroniza estado inicial
+        RegenerateHearts(Mathf.RoundToInt(playerHealth.MaxHealth));
+        OnHealthChanged(playerHealth.CurrentHealth, playerHealth.MaxHealth);
     }
 
-    private void GenerateHearts(float max)
+    void RegenerateHearts(int max)
     {
         foreach (var h in hearts) Destroy(h);
         hearts.Clear();
 
-        int count = Mathf.RoundToInt(max);
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < max; i++)
             hearts.Add(Instantiate(heartPrefab, heartsContainer));
     }
 
-    private void UpdateHearts(float current, float max)
+    // Hook que llega cada vez que cambia la SyncVar en NetworkHealth
+    void OnHealthChanged(float current, float max)
     {
-        int activeHearts = Mathf.Clamp(Mathf.FloorToInt(current), 0, hearts.Count);
+        // Si algún día modificas max en runtime, reconstituye la UI:
+        int maxInt = Mathf.RoundToInt(max);
+        if (maxInt != hearts.Count)
+            RegenerateHearts(maxInt);
+
+        int active = Mathf.Clamp(Mathf.FloorToInt(current), 0, hearts.Count);
         for (int i = 0; i < hearts.Count; i++)
-            hearts[i].SetActive(i < activeHearts);
+            hearts[i].SetActive(i < active);
     }
 }

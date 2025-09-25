@@ -14,6 +14,8 @@ GameObject:
   - component: {fileID: 7769326410451542205}
   - component: {fileID: 3304020434179395460}
   - component: {fileID: 550575319241470512}
+  - component: {fileID: -9152727036806614043}
+  - component: {fileID: -2681876506336155255}
   m_Layer: 0
   m_Name: Fireball
   m_TagString: Untagged
@@ -47,9 +49,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1238c9c83bf96b4da74af9d5826b402, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   timeToDestroy: 0.3
   damage: 1
+  speed: 0.24
   isBulletPlayer: 1
+  owner: {fileID: 0}
 --- !u!33 &5491795036017693815
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -128,3 +135,54 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &-9152727036806614043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8129785972816200040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  _assetId: 1991395168
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
+--- !u!114 &-2681876506336155255
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8129785972816200040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a553cb17010b2403e8523b558bffbc14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  target: {fileID: 8906182621631454162}
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 0
+  onlySyncOnChange: 1
+  compressRotation: 1
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 1
+  coordinateSpace: 0
+  timelineOffset: 1
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  bufferResetMultiplier: 3
+  useFixedUpdate: 1
+  positionSensitivity: 0.01
+  rotationSensitivity: 0.01
+  scaleSensitivity: 0.01

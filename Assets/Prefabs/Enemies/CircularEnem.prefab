@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 8684344543331778483}
   - component: {fileID: 8825236666558751752}
   - component: {fileID: 1079864457968876220}
+  - component: {fileID: -1348855461351181284}
+  - component: {fileID: -8287701388189912015}
   m_Layer: 0
   m_Name: CircularEnem
   m_TagString: Enemy
@@ -28,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 2759865286966782039}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
+  m_LocalScale: {x: 0.03, y: 0.03, z: 0.03}
   m_Children:
   - {fileID: 1181689334919909281}
   - {fileID: 4855117274971801971}
@@ -47,6 +49,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57b2d08ec4eece34093f3a44e4a54031, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   health: 1
   canAct: 0
   dealContactDamage: 1
@@ -63,19 +68,13 @@ MonoBehaviour:
   dropChance: 0.7
   coinPrefab: {fileID: 4560948008629810073, guid: c59b4f4811b640e4aa3338fec8a0e2f8, type: 3}
   coinAmountRange: {x: 1, y: 2}
-  scatterRadius: 0.5
-  scatterImpulse: 2
-  destroyDelay: 0.1
+  coinScatter: 0.025
   coinSpawnForward: 0.06
   coinSpawnUp: 0.01
-  coinScatter: 0.025
+  destroyDelay: 0.1
   bulletPrefab: {fileID: 7762724021669795424, guid: 7d19250669a4cde458feec1bf607c7cc, type: 3}
   bulletsPerWave: 8
   fireRate: 0.3
-  moveRadius: 2
-  moveSpeed: 1.2
-  minDistance: 3
-  rb: {fileID: 1079864457968876220}
   shootOrigin: {fileID: 4855117274971801971}
   spawnDistance: 0.01
   shootHeightOffset: 0
@@ -108,6 +107,57 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 80
   m_CollisionDetection: 0
+--- !u!114 &-1348855461351181284
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2759865286966782039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  _assetId: 3728940807
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
+--- !u!114 &-8287701388189912015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2759865286966782039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b20dc110904e47f8a154cdcf6433eae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  target: {fileID: 1412217774637884063}
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 0
+  onlySyncOnChange: 1
+  compressRotation: 1
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 1
+  coordinateSpace: 0
+  timelineOffset: 1
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  bufferResetMultiplier: 3
+  useFixedUpdate: 0
+  positionSensitivity: 0.01
+  rotationSensitivity: 0.01
+  scaleSensitivity: 0.01
 --- !u!1 &7641558645105735793
 GameObject:
   m_ObjectHideFlags: 0

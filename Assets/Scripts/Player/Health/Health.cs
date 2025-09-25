@@ -1,58 +1,93 @@
+using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.LegacyInputHelpers;
 
-public class Health : MonoBehaviour
+public class Health : NetworkBehaviour
 {
     [Header("Vida")]
-    public float maxHealth = 6f;
-    public float currentHealth;
+    [SerializeField] private float maxHealth = 6f;
 
+    // Se replica a todos; el hook dispara eventos locales para UI
+    [SyncVar(hook = nameof(OnHealthSync))]
+    private float currentHealth;
+
+    // Eventos SOLO locales (para UI/HUD de cada cliente)
     public event Action<float, float> OnHealthChanged;
     public event Action OnDied;
 
-    private void Awake()
+    public float MaxHealth => maxHealth;
+    public float CurrentHealth => currentHealth;
+    public bool IsDead => currentHealth <= 0f;
+
+    #region Lifecycle
+    public override void OnStartServer()
     {
-        currentHealth = maxHealth;
+        base.OnStartServer();
+        currentHealth = Mathf.Clamp(currentHealth <= 0f ? maxHealth : currentHealth, 0f, maxHealth);
     }
 
-    private void OnEnable()
+    public override void OnStartClient()
     {
-        // Emite estado actual cuando el componente se habilita, así nuevas UIs se sincronizan
+        base.OnStartClient();
+        // Al entrar un cliente, emite el estado actual para “sincronizar” HUD
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
+        if (IsDead) OnDied?.Invoke();
     }
+    #endregion
 
-    public void ApplyDamage(float amount)
+    #region Hooks
+    // Este hook se ejecuta en TODOS los clientes cuando cambia la SyncVar
+    void OnHealthSync(float oldValue, float newValue)
     {
-        if (currentHealth <= 0f) return;
-
-        currentHealth = Mathf.Max(0f, currentHealth - amount);
-        OnHealthChanged?.Invoke(currentHealth, maxHealth);
-
-        if (currentHealth <= 0f)
+        OnHealthChanged?.Invoke(newValue, maxHealth);
+        if (newValue <= 0f && oldValue > 0f)
             OnDied?.Invoke();
     }
+    #endregion
 
-    public void Heal(float amount)
+    #region API (SERVER authoritative)
+    [Server]
+    public void ApplyDamageServer(float amount)
     {
-        if (currentHealth <= 0f) return;
+        if (amount <= 0f || IsDead) return;
+        currentHealth = Mathf.Max(0f, currentHealth - amount);
+    }
 
+    [Server]
+    public void HealServer(float amount)
+    {
+        if (amount <= 0f || IsDead) return;
         currentHealth = Mathf.Min(maxHealth, currentHealth + amount);
-        OnHealthChanged?.Invoke(currentHealth, maxHealth);
     }
 
-    public void IncrementHealth(float amount)
+    [Server]
+    public void SetMaxHealthServer(float newMax, bool clampToNewMax = true)
     {
-        if(currentHealth>=maxHealth) return;
+        maxHealth = Mathf.Max(0.01f, newMax);
+        if (clampToNewMax && currentHealth > maxHealth)
+            currentHealth = maxHealth;
+        // Dispara hook para refrescar UI
+        OnHealthSync(currentHealth, currentHealth);
+    }
+    #endregion
 
-        currentHealth += amount;
-        OnHealthChanged?.Invoke(currentHealth, maxHealth);
+    #region Opcional: peticiones del cliente (si quieres botones de “curar” locales)
+    // Si te interesa que el propio jugador pida acciones (p.ej. usar poción),
+    // puedes exponer estos Commands. Usa requiresAuthority según tu diseño.
+
+    [Command(requiresAuthority = true)]
+    public void CmdRequestHeal(float amount)
+    {
+        HealServer(amount);
     }
 
-    public void DecrementHealth(float amount) 
-    { if (currentHealth <= 0f) return; 
-        ApplyDamage(amount);
+    [Command(requiresAuthority = true)]
+    public void CmdRequestDamage(float amount)
+    {
+        ApplyDamageServer(amount);
     }
+    #endregion
 }

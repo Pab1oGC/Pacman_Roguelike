@@ -1,3 +1,4 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -64,5 +65,27 @@ public class AttackController : MonoBehaviour
     {
         if(lifeTimeBullet <= 0.1) return;
         lifeTimeBullet -= decrease;
+    }
+
+    [Server]
+    public void AttackServer(Vector3 worldDir)
+    {
+        if (!fireballPrefab || !firePoint) return;
+
+        // Rotación orientada a la dirección (fallback al forward del firePoint)
+        Quaternion rot = firePoint.rotation;
+        if (worldDir.sqrMagnitude > 1e-6f) rot = Quaternion.LookRotation(worldDir.normalized, Vector3.up);
+
+        // Instancia en server
+        Bullet b = Instantiate(fireballPrefab, firePoint.position, rot);
+        b.timeToDestroy = lifeTimeBullet;
+
+        // Si tu Bullet se mueve por sí mismo, no hace falta RB aquí.
+        // Si usas Rigidbody en la bala y quieres empujarla:
+        // var rb = b.GetComponent<Rigidbody>();
+        // if (rb) rb.velocity = (worldDir.sqrMagnitude > 1e-6f ? worldDir.normalized : firePoint.forward) * 12f;
+
+        // IMPORTANTE: el prefab de Bullet debe tener NetworkIdentity y estar en Spawnable Prefabs
+        NetworkServer.Spawn(b.gameObject);
     }
 }

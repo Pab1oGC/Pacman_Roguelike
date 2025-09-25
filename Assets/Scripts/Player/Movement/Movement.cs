@@ -98,6 +98,11 @@ public class Movement : NetworkBehaviour
         // Si el flag cambia en runtime, refresca la política sin allocs
         _rotationPolicy = UseCfgFaceInstantly() ? (IRotationPolicy)new InstantRotationPolicy()
                                                : new SmoothRotationPolicy();
+
+        float baseSpeed = _speed?.CurrentSpeed ?? UseCfgMoveSpeed();
+        float amount = (_movementLocked || (attackController && attackController.IsAttacking))
+                          ? 0f : Mathf.Clamp01(_input.magnitude);
+        if (animator) animator.SetFloat("Speed", baseSpeed * amount * 20.5f, 0.1f, Time.deltaTime);
     }
 
     private void FixedUpdate()

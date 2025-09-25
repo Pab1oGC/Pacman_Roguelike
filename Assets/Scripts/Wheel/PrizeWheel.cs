@@ -102,7 +102,7 @@ public class PrizeWheel : MonoBehaviour
             return; // si prefieres que gire gratis cuando no hay wallet, quita este return
         }
 
-        if (!wallet.Spend(spinCost))
+        if (!wallet.SpendCoinsServer(spinCost))
         {
             Debug.LogWarning($"[PrizeWheel] Monedas insuficientes. Necesitas {spinCost}.");
             toasts.Enqueue("Monedas insuficientes", 1.6f, ToastType.Error);
@@ -187,12 +187,12 @@ public class PrizeWheel : MonoBehaviour
         {
             case RewardType.Coins:
                 PlayerWallet wallet = player.GetComponentInChildren<PlayerWallet>();
-                wallet.Add(1);
+                wallet.AddCoinsServer(1);
                 toasts.Enqueue("+1 Moneda", 1.9f, ToastType.Success);
                 break;
             case RewardType.Heal:
                 Health health = player.GetComponentInChildren<Health>();
-                health.IncrementHealth(1);
+                health.HealServer(1);
                 toasts.Enqueue("+1 Vida", 1.9f, ToastType.Success);
                 break;
             case RewardType.Speed:
@@ -207,12 +207,12 @@ public class PrizeWheel : MonoBehaviour
                 break;
             case RewardType.NoCoins:
                 PlayerWallet nowallet = player.GetComponentInChildren<PlayerWallet>();
-                nowallet.Spend(1);
+                nowallet.SpendCoinsServer(1);
                 toasts.Enqueue("-1 Moneda", 1.9f, ToastType.Info);
                 break;
             case RewardType.NoHeal:
                 Health nohealth = player.GetComponentInChildren<Health>();
-                nohealth.DecrementHealth(1);
+                nohealth.ApplyDamageServer(1);
                 toasts.Enqueue("-1 Vida", 1.9f, ToastType.Info);
                 break;
             case RewardType.NoSpeed:

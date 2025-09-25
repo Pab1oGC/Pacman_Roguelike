@@ -1174,6 +1174,9 @@ GameObject:
   - component: {fileID: -8561631692976204983}
   - component: {fileID: 858585512983524597}
   - component: {fileID: 5768673373091938284}
+  - component: {fileID: -1081576949260546741}
+  - component: {fileID: -8065107203763479536}
+  - component: {fileID: -251236353184441969}
   m_Layer: 0
   m_Name: ShooterEnemy
   m_TagString: Enemy
@@ -1190,7 +1193,7 @@ Transform:
   m_GameObject: {fileID: 3987253785040186052}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -1.686}
-  m_LocalScale: {x: 0.9, y: 0.9, z: 0.9}
+  m_LocalScale: {x: 0.04, y: 0.04, z: 0.04}
   m_Children:
   - {fileID: 8092423520775622890}
   - {fileID: 6398756588286438250}
@@ -1231,6 +1234,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6198f334f15587e43bb4ec1ce2ec8353, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   health: 1
   canAct: 0
   dealContactDamage: 1
@@ -1247,19 +1253,16 @@ MonoBehaviour:
   dropChance: 0.7
   coinPrefab: {fileID: 4560948008629810073, guid: c59b4f4811b640e4aa3338fec8a0e2f8, type: 3}
   coinAmountRange: {x: 1, y: 2}
-  scatterRadius: 0.5
-  scatterImpulse: 2
-  destroyDelay: 0.1
+  coinScatter: 0.025
   coinSpawnForward: 0.06
   coinSpawnUp: 0.01
-  coinScatter: 0.025
+  destroyDelay: 0.1
   bulletPrefab: {fileID: 7762724021669795424, guid: 7d19250669a4cde458feec1bf607c7cc, type: 3}
   firePoint: {fileID: 2599031957490774217}
   fireRate: 1
-  moveRadius: 2
-  moveSpeed: 1.5
   minDistance: 5
-  rb: {fileID: 5768673373091938284}
+  moveSpeed: 1.5
+  rotationSpeed: 360
 --- !u!136 &858585512983524597
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1290,6 +1293,74 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 80
   m_CollisionDetection: 0
+--- !u!114 &-1081576949260546741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3987253785040186052}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  _assetId: 4150117025
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
+--- !u!114 &-8065107203763479536
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3987253785040186052}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b20dc110904e47f8a154cdcf6433eae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0.02
+  target: {fileID: 4331973136675680382}
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 0
+  onlySyncOnChange: 1
+  compressRotation: 1
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 1
+  coordinateSpace: 0
+  timelineOffset: 1
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  bufferResetMultiplier: 3
+  useFixedUpdate: 0
+  positionSensitivity: 0.005
+  rotationSensitivity: 0.005
+  scaleSensitivity: 0.01
+--- !u!114 &-251236353184441969
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3987253785040186052}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f6f3bf89aa97405989c802ba270f815, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 1
+  syncMode: 0
+  syncInterval: 0
+  clientAuthority: 1
+  animator: {fileID: 7709720872745658884}
 --- !u!1 &4146647143449531859
 GameObject:
   m_ObjectHideFlags: 0

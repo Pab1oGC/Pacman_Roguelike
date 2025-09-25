@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1462481903318128390}
   - component: {fileID: 8245034009915966794}
   - component: {fileID: -4158416700633705021}
+  - component: {fileID: -3053450219366423429}
   m_Layer: 0
   m_Name: Buffon
   m_TagString: Buffon
@@ -61,6 +62,29 @@ MonoBehaviour:
   panel: {fileID: 5579040532978483964, guid: 218d6097e5c13cd4a91d21fd7482b5c9, type: 3}
   panelTag: Panel
   openOnPlayerCollision: 1
+  joystickMovement: {fileID: 0}
+  joystickAttack: {fileID: 0}
+  arCamera: {fileID: 0}
+  hitMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!114 &-3053450219366423429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1462481903318128389}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  _assetId: 1285647363
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &1462481903202925835
 PrefabInstance:
   m_ObjectHideFlags: 0

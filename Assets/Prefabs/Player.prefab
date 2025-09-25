@@ -183,10 +183,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2667c26386a3654ba08744b2e47edc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   attackController: {fileID: 4266369032228702476}
   facing: {fileID: 3369642784169392318}
   snapFaceOnFire: 1
   rotateSpeed: 999
+  replicateAnimViaRpc: 1
 --- !u!114 &-8499586697560581733
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -294,7 +298,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncDirection: 1
   syncMode: 0
-  syncInterval: 0
+  syncInterval: 0.02
   target: {fileID: 3369642784169392318}
   syncPosition: 1
   syncRotation: 1
@@ -311,8 +315,8 @@ MonoBehaviour:
   overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
   bufferResetMultiplier: 3
   useFixedUpdate: 0
-  positionSensitivity: 0.01
-  rotationSensitivity: 0.01
+  positionSensitivity: 0.005
+  rotationSensitivity: 0.005
   scaleSensitivity: 0.01
 --- !u!114 &-716713855429200166
 MonoBehaviour:
@@ -326,7 +330,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4efd1271e76ad6499eded6d0042804e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
+  syncDirection: 1
   syncMode: 0
   syncInterval: 0
 --- !u!114 &-3793562824037666902
@@ -403,6 +407,10 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 2996b7546c02c6d4dbff40f5c446d608, type: 2}
+    - target: {fileID: 5866666021909216657, guid: e65d5872ad5c84749aade7b70be616e7, type: 3}
+      propertyPath: m_CullingMode
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e65d5872ad5c84749aade7b70be616e7, type: 3}
 --- !u!1 &1918931486862098823 stripped
@@ -436,6 +444,40 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 84
   m_CollisionDetection: 0
+--- !u!114 &3473936415786103358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1918931486862098823}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b20dc110904e47f8a154cdcf6433eae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 1
+  syncMode: 0
+  syncInterval: 0.02
+  target: {fileID: 1291049481093651261}
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 0
+  onlySyncOnChange: 1
+  compressRotation: 1
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 1
+  coordinateSpace: 0
+  timelineOffset: 1
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  bufferResetMultiplier: 3
+  useFixedUpdate: 0
+  positionSensitivity: 0.005
+  rotationSensitivity: 0.005
+  scaleSensitivity: 0.01
 --- !u!114 &4266369032228702476
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -449,5 +491,41 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 5119069390770782535}
-  fireballPrefab: {fileID: -3980775075144627359, guid: 7de4b50ebc56f2e4383bb7be42931e8a, type: 3}
+  fireballPrefab: {fileID: 0}
+  firePoint: {fileID: 0}
+--- !u!114 &4651340758413835911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1918931486862098823}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3c572a0c592a024f91be4bda16ef711, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  bulletPrefab: {fileID: 8129785972816200040, guid: 7de4b50ebc56f2e4383bb7be42931e8a, type: 3}
   firePoint: {fileID: 6738847221612533841}
+  bulletSpeed: 12
+  lifeTimeBullet: 3
+--- !u!114 &5770219350691126825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1918931486862098823}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f6f3bf89aa97405989c802ba270f815, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 1
+  syncMode: 0
+  syncInterval: 0
+  clientAuthority: 1
+  animator: {fileID: 5119069390770782535}

@@ -1682,7 +1682,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1223674989}
   - component: {fileID: 1223674988}
-  - component: {fileID: 1223674987}
   m_Layer: 5
   m_Name: Log
   m_TagString: Untagged
@@ -1690,40 +1689,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1223674987
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1223674986}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 20
-    m_FontStyle: 0
-    m_BestFit: 0
-    m_MinSize: 0
-    m_MaxSize: 40
-    m_Alignment: 4
-    m_AlignByGeometry: 0
-    m_RichText: 1
-    m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
-    m_LineSpacing: 1
-  m_Text: JFDKLJFJDLKS
 --- !u!222 &1223674988
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1855,7 +1820,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e2d9719dc0e0054ea53bc564fe22b30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uiText: {fileID: 1223674987}
+  uiText: {fileID: 0}
   maxLines: 20
 --- !u!4 &1257229728
 Transform:
@@ -2036,7 +2001,14 @@ MonoBehaviour:
   playerPrefab: {fileID: 4217805844949086149, guid: d9f8f5b706dcb1c429d26e0d907a7172, type: 3}
   autoCreatePlayer: 1
   playerSpawnMethod: 0
-  spawnPrefabs: []
+  spawnPrefabs:
+  - {fileID: 8129785972816200040, guid: 7de4b50ebc56f2e4383bb7be42931e8a, type: 3}
+  - {fileID: 7762724021669795424, guid: 7d19250669a4cde458feec1bf607c7cc, type: 3}
+  - {fileID: 2759865286966782039, guid: 05f966b00eba7944fbb0d59bb4bd42f3, type: 3}
+  - {fileID: 716134623845905519, guid: 90474af9b8de2964aacf4ca7c527d164, type: 3}
+  - {fileID: 3987253785040186052, guid: bc38ae8665656cb4f8e12eb4b443c293, type: 3}
+  - {fileID: 1462481903318128389, guid: 7a531636daf27a2498cbecfdaa872811, type: 3}
+  - {fileID: 4560948008629810073, guid: c59b4f4811b640e4aa3338fec8a0e2f8, type: 3}
   exceptionsDisconnect: 1
   snapshotSettings:
     bufferTimeMultiplier: 2

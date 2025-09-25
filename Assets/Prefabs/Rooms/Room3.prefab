@@ -11,6 +11,10 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: c59718c73442663468ce5c88422d28a9, type: 2}
+    - target: {fileID: 5300875711731791633, guid: 5d742cbaa12407146bd3454131628b6e, type: 3}
+      propertyPath: _assetId
+      value: 2082330644
+      objectReference: {fileID: 0}
     - target: {fileID: 7973538313113357229, guid: 5d742cbaa12407146bd3454131628b6e, type: 3}
       propertyPath: m_Name
       value: Room3
@@ -79,10 +83,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12ea01fc6c065ef4d9ca73bda4dbe1f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   enemyPrefabs:
   - {fileID: 0}
   minEnemies: 1
   maxEnemies: 1
   spawnPoints: []
+  room: {fileID: 0}
   buffon: {fileID: 0}
   buffonSpawn: {fileID: 0}
+  joinWindowSeconds: 5
+  minPlayersToStart: 1

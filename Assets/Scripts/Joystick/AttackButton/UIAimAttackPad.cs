@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Mirror;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -77,21 +78,19 @@ public class UIAimAttackPad : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 
     private IEnumerator WaitAndBindPlayer()
     {
-        GameObject go = null;
-        while (go == null)
-        {
-            go = GameObject.FindGameObjectWithTag(playerTag);
+        // espera a que exista y esté listo el player local
+        while (NetworkClient.localPlayer == null)
             yield return null;
-        }
-        _player = go.transform;
-        _relay = go.GetComponentInChildren<AimAttackRelay>();
-        if (_relay == null) _relay = go.AddComponent<AimAttackRelay>();
 
-        // Re-parent de la línea al player (si existe), una vez que lo tenemos
-        if (worldLine)
-        {
-            worldLine.transform.SetParent(_player, false);
-        }
+        var localId = NetworkClient.localPlayer;
+        _player = localId.transform;
+
+        // Relay (en el mismo prefab del player)
+        _relay = localId.GetComponentInChildren<AimAttackRelay>();
+        if (_relay == null) _relay = localId.gameObject.AddComponent<AimAttackRelay>();
+
+        // Re-parent de la línea al player (si la tenías creada antes)
+        if (worldLine) worldLine.transform.SetParent(_player, false);
     }
 
     // Cámara correcta para RectTransformUtility según modo del Canvas
